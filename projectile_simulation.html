@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>প্রাসের গতি — ইন্টারঅ্যাকটিভ সিমুলেশন</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<style>
+:root{--bg:#dcebfa;--card:#fff;--ink:#0b2a4f;--mut:#5b7089;--navy:#06305f;--blue:#0a63d6;--line:#b7d3f0;--ok:#0f8a4b;--okbg:#e6f7ee;--unk:#b86a00;--unkbg:#fff4df;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:#041f40}#wrap{position:relative;overflow:hidden}
+body{font-family:'Hind Siliguri','Noto Sans Bengali','Kalpurush','Vrinda',sans-serif;color:var(--ink)}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+header{height:76px;align-items:center;flex:none;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+header h1{margin:0;font-size:30px;font-weight:700;white-space:nowrap}
+.tools{display:flex;gap:8px;align-items:center}
+.tools button,.tools select{background:#ffffff22;color:#fff;border:1px solid #ffffff66;border-radius:8px;padding:5px 12px;font:inherit;font-size:16px;cursor:pointer}
+
+/* layout */
+#main{flex:1;min-height:0;display:grid;grid-template-columns:520px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"inp view" "res view";gap:10px 14px;padding:10px 16px}
+#inp{grid-area:inp}.stage{grid-area:view}#res{grid-area:res;overflow-y:auto;min-height:0;display:flex;flex-direction:column;gap:8px;padding-right:2px}
+/* compact cards */
+#top{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:7px;padding:2px 6px 4px;box-shadow:0 1px 3px #06305f18}
+.card.k{border-color:var(--blue)}.card.c{border-color:var(--ok);background:var(--okbg)}.card.u{border:1.5px dashed var(--unk);background:var(--unkbg)}
+
+.card.x{opacity:.55;background:#eef1f5;border:2px dashed #9aa8ba}.card.x input{color:var(--mut)}
+.top{font-weight:600;font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row{display:flex;margin-top:1px;border:1.5px solid var(--line);border-radius:6px;background:#fff;overflow:hidden;height:26px}
+.row input{flex:1;min-width:0;border:0;padding:0 6px;font:inherit;font-size:16px;font-weight:600;color:var(--blue);outline:0;background:transparent}
+.card.c input{color:var(--ok)}.row input.bad{background:#fde8e8}
+.row select{width:52px;border:0;border-left:1.5px solid var(--line);background:#eef5fd;font:inherit;font-size:12px;padding:0;color:var(--mut)}
+.seg{display:flex;gap:2px;margin-top:2px}.seg button{flex:1;border:1px solid var(--line);background:#fff;border-radius:4px;font:inherit;font-size:11.5px;line-height:1.3;padding:0;cursor:pointer;color:var(--mut)}.seg button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tag{font-size:11px;color:var(--mut);margin-top:2px;min-height:16px;display:flex;align-items:center}.tag:empty{display:none}
+#bt{display:flex;gap:6px;margin-top:5px}
+.btn{border:0;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:var(--blue)}
+#show{flex:1.2;height:32px;font-size:15px}#solve{flex:1;height:32px;font-size:13px;background:var(--navy)}
+#msg{margin-top:6px;font-size:15px}#msg:empty{display:none}
+.warn,.info{border-radius:8px;padding:6px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.warn{background:#fde8e8;color:#9b1c1c;border:1px solid #f3b4b4}.info{background:var(--unkbg);border:1px solid var(--unk)}
+.info button{padding:3px 10px;font-size:15px;border-radius:6px}
+/* viewport */
+.stage{display:flex;flex-direction:column;min-height:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
+#view{position:relative;flex:1;min-height:0;background:#cfe5f5}
+#view canvas{position:absolute;inset:0;width:100%;height:100%}
+#vbar{position:absolute;left:10px;top:10px;display:flex;gap:6px;z-index:2}
+#vbar button{background:#06305fe0;color:#fff;border:0;border-radius:8px;padding:6px 12px;font:inherit;font-size:16px;cursor:pointer}#vbar .on{background:var(--blue)}
+#hud{position:absolute;right:10px;top:10px;z-index:2;background:#06305fd0;color:#fff;border-radius:8px;padding:6px 12px;font-size:16px;line-height:1.45;pointer-events:none}#hud:empty{display:none}
+#ph{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:30px;color:#06305f;font-size:26px;z-index:1}
+.ctl{flex:none;padding:8px 12px;display:flex;gap:8px;align-items:center;background:#fff}
+.ctl button{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:6px 12px;font:inherit;font-size:16px;cursor:pointer;white-space:nowrap}
+.ctl input{flex:1;min-width:80px;accent-color:var(--blue)}.ctl span{font-size:16px;color:var(--mut);white-space:nowrap}
+/* result panels */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 12px 8px;box-shadow:0 2px 6px #06305f14;flex:none}
+.panel h2{margin:0 0 3px;font-size:18px;color:var(--navy)}
+table{width:100%;border-collapse:collapse}td,th{padding:3px 3px;border-bottom:1px solid var(--line);text-align:left;font-size:16px}
+td:nth-child(2),th:nth-child(2),td:nth-child(3),th:nth-child(3){text-align:right}td.u{color:var(--mut)}td:nth-child(3){color:var(--mut);width:56px}
+tr.sub td{background:#eef5fd;font-weight:600;color:var(--navy);text-align:left!important}
+footer{height:34px;flex:none;background:var(--navy);color:#fff;display:flex;align-items:center;padding:0 24px;font-size:15px;white-space:nowrap;overflow:hidden}
+/* portrait / phone */
+.p header{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'t c' 'b b';align-items:center;height:auto;padding:10px 14px;gap:8px 10px;text-align:left}.p header h1{grid-area:t;font-size:22px;white-space:normal;line-height:1.25}.p .tools{grid-area:b;flex-wrap:wrap;justify-content:center;margin:0}
+.p #main{grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"inp" "view" "res";flex:none;padding:10px}
+.p .stage{height:640px}.p #res{overflow:visible}
+.p .ctl{flex-wrap:wrap}.p .ctl input{flex-basis:100%;order:9}
+.p footer{height:auto;white-space:normal;padding:8px 14px;font-size:14px}
+
+/* Y / N / ? কার্ড */
+.card{display:grid;grid-template-columns:minmax(0,1fr) 34px;grid-template-rows:auto 34px 24px;padding:0;overflow:hidden;border-radius:6px;gap:0;background:#fff;box-shadow:0 1px 3px #06305f18}
+.card .top{grid-column:1/3;text-align:center;font-size:13px;padding:1px 4px;border-bottom:1.5px solid var(--line);background:#f3f8fe;line-height:1.35}
+.card input{grid-column:1;grid-row:2;min-width:0;width:100%;border:0;border-right:1.5px solid var(--line);padding:0 8px;font:inherit;font-size:20px;font-weight:600;color:var(--blue);outline:0;background:transparent}
+.card.c input{color:var(--ok)}.card input.bad{background:#fde8e8}.card input:disabled{color:var(--mut)}
+.card .un{grid-column:1;grid-row:3;position:relative;border-top:1.5px solid var(--line);border-right:1.5px solid var(--line);background:#eef5fd}
+.card .un select{appearance:none;-webkit-appearance:none;width:100%;height:100%;border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink);padding:0 22px 0 8px;cursor:pointer}
+.card .un i{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-style:normal;font-size:13px;pointer-events:none;color:var(--mut)}
+.yn{grid-column:2;grid-row:2/4;display:flex;flex-direction:column}
+.yn button{flex:1;border:0;border-bottom:1.5px solid var(--line);background:#fff;font:inherit;font-size:15px;font-weight:600;color:var(--mut);cursor:pointer;padding:0}
+.yn button:last-child{border-bottom:0}.yn button.on{background:var(--navy);color:#fff}.yn button:disabled{opacity:.3;cursor:default}
+.p #top{grid-template-columns:1fr 1fr}
+
+/* ৩-৩-৪ বিন্যাস */
+#top,.p #top{grid-template-columns:repeat(12,minmax(0,1fr));gap:4px}
+#top .card:nth-child(-n+6){grid-column:span 4}
+#top .card:nth-child(n+7){grid-column:span 3}
+.card{grid-template-columns:minmax(0,1fr) 28px;grid-template-rows:auto 36px 27px}
+.card .top{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card input{font-size:18px;padding:0 5px}
+.card .un select{font-size:12px;padding:0 16px 0 5px}
+.card .un i{right:4px;font-size:11px}
+.yn button{font-size:13px;line-height:1;min-height:0;overflow:hidden}
+
+/* উত্তর যাচাই */
+.card.no{border-color:#c0392b;background:#fde8e8}.card.no input{color:#c0392b}
+.ans{width:100%;border:1.5px solid var(--line);border-radius:6px;font:inherit;font-size:16px;font-weight:600;text-align:right;padding:1px 6px;color:var(--blue);background:#fff;outline:0}
+.ans.ok{border-color:var(--ok);background:var(--okbg);color:var(--ok)}.ans.no{border-color:#c0392b;background:#fde8e8;color:#c0392b}
+#clap{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:5;background:#06305f99;color:#fff;text-align:center;cursor:pointer}
+#clap.on{display:flex}
+#clap .em{font-size:150px;line-height:1.1;animation:clp .45s ease-in-out infinite alternate}
+#clap .tx{font-size:52px;font-weight:700;margin-top:8px}#clap .sb{font-size:32px;opacity:.95}
+@keyframes clp{from{transform:scale(.85) rotate(-12deg)}to{transform:scale(1.15) rotate(12deg)}}
+
+.card .top{padding:1px 4px}
+.eye{position:absolute;right:1px;top:50%;transform:translateY(-50%);border:0;background:transparent;font-size:12px;line-height:1;padding:1px 2px;cursor:pointer;opacity:.75}
+.eyeb{border:0;background:transparent;cursor:pointer;font-size:13px;padding:0;opacity:.75}
+.yn button:nth-child(3){font-size:12px}.yn button:nth-child(3):not(.on){opacity:.55}
+.card.x{opacity:1;background:#fff;border:1.5px solid var(--line)}.card.x input{color:var(--mut);background:#fff}.card.x .un{background:#eef5fd}
+
+.tools{margin-left:auto}
+.credit{margin-left:22px;text-align:right;font-size:12px;line-height:1.3;opacity:.95;white-space:nowrap}
+.credit b{display:block;font-size:19px;font-weight:700;line-height:1.25;opacity:1}
+.p .credit{grid-area:c;margin:0;text-align:right;font-size:11px}.p .credit b{font-size:15px}
+.tgl{cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center}.tgl::after{content:'▾';font-size:16px;color:var(--mut)}#xp:not(.open) .tgl::after{content:'▸'}#xp:not(.open) table{display:none}#xp:not(.open) h2{margin-bottom:0}
+
+/* প্রজেক্টর / ক্লাসরুম: বড় লেখা */
+header{height:88px}header h1{font-size:36px}.credit{font-size:14px}.credit b{font-size:23px}
+#main{grid-template-columns:560px minmax(0,1fr)}
+.card{grid-template-columns:minmax(0,1fr) 32px;grid-template-rows:auto 42px 30px}
+.card .top{font-size:14.5px}.card input{font-size:23px}.card .un select{font-size:14px}
+.yn button,.yn button:nth-child(3){font-size:15px}
+.tools button{font-size:17px}
+#show{height:38px;font-size:17px}#solve{height:38px;font-size:15px}
+#vbar button,.ctl button{font-size:18px}#hud{font-size:20px}.ctl span{font-size:17px}
+.panel h2{font-size:21px}td,th{font-size:18px}.ans{font-size:18px}
+footer{font-size:16px;height:38px}
+</style></head><body><div id="wrap"><div id="stage">
+<header><h1>প্রাসের গতি — ইন্টারঅ্যাকটিভ সিমুলেশন</h1><div class="tools"><button id="dk">🖥 ডেক্সটপ মোড</button><button id="fs">⛶ পূর্ণ পর্দা</button><button id="rst">↺ নতুন সমস্যা</button></div><div class="credit"><b>মোঃ আমিরুল ইসলাম</b>প্রভাষক (পদার্থবিজ্ঞান)<br>হাজী জসীম উদ্দীন ডিগ্রী কলেজ<br>দুবলিয়া, পাবনা সদর, পাবনা।</div></header>
+<div id="main">
+<section id="inp"><div id="top"></div><div id="bt"><button class="btn" id="show">▶ সিমুলেশন চালাও</button><button class="btn" id="solve">সমীকরণ থেকে মান নির্ণয়</button></div><div id="msg"></div></section>
+<div class="stage"><div id="view"><div id="vbar"><button id="b3" class="on">3D দৃশ্যপট</button><button id="bs">পাশের দৃশ্য</button><button id="bc">ক্যামেরা রিসেট</button></div><div id="hud"></div><div id="clap"><div class="em">👏</div><div class="tx">সাবাশ! উত্তর মিলে গেছে</div><div class="sb">সবাই হাততালি দাও!</div></div><div id="ph"></div></div>
+<div class="ctl"><button id="play">▶ চালাও</button><button id="pause">⏸ বিরতি</button><button id="restart">↺ শুরু থেকে</button><button id="slow">⏪ ধীরে</button><button id="fast">⏩ দ্রুত</button><span id="spd">গতি: 1×</span><input type="range" id="tl" min="0" max="1000" value="0" aria-label="সময়"></div></div>
+<section id="res"><div class="panel" id="xp"><h2 class="tgl">অতিরিক্ত মান</h2><table id="rt"></table></div><div class="panel" id="qp" style="display:none"><h2>নির্দিষ্ট বিন্দুর মান</h2><table id="qt"></table></div><div class="panel"><h2>পথের কিছু মান (x, y)</h2><table id="pt"></table></div></section>
+</div>
+<footer>Y = মান দেব · N = লাগবে না · 🔒 = নির্ণয় করব (উত্তর লুকানো) — আবার চাপলে 👁 হয়ে শুধু সেই উত্তর দেখা যায়। 🔒 বক্সে ছাত্রছাত্রীর উত্তর লিখে মেলাও।</footer>
+</div></div>
+<script>
+const Q=[['v','নিক্ষেপণ বেগ','v₀','m/s'],['a','নিক্ষেপণ কোণ','θ₀','°'],['g','অভিকর্ষজ ত্বরণ','g','m/s²'],['H','সর্বোচ্চ উচ্চতা','H','m'],['R','অনুভূমিক পাল্লা','R','m'],['T','বিচরণকাল','T','s'],['h','নিক্ষেপ-উচ্চতা','h₀','m'],['pt','নির্দিষ্ট সময়','t','s'],['px','নির্দিষ্ট দূরত্ব','x','m'],['py','নির্দিষ্ট উচ্চতা','y','m']];
+const PQ=['pt','px','py'];
+const LEN=[['m',1],['km',1000],['cm',.01]];
+const UN={v:[['m/s',1],['km/h',1/3.6]],a:[['°',1],['rad',180/Math.PI]],h:LEN,g:[['m/s²',1],['cm/s²',.01]],T:[['s',1],['min',60]],R:LEN,H:LEN,pt:[['s',1],['min',60]],px:LEN,py:LEN};
+const S={},X={},uf={},IN={},CD={};for(const q of Q)uf[q[0]]=1;
+let HIDE=true,MATCH={},REV={},lastOk=false;const ANS={},YF={},GQ={};let P=null,Qp=[],tt=0,playing=false,spd=1,side=false,choices=null,curK=1;
+const $=i=>document.getElementById(i),rad=d=>d*Math.PI/180,deg=r=>r*180/Math.PI;
+const f=(x)=>{x=+x;if(x===0)return'0';const a=Math.abs(x);if(a>=1e7||a<1e-3)return x.toExponential(3);return x.toFixed(a>=1?2:4)};const tk=v=>Math.abs(v)>=1e6?v.toExponential(2):String(+v.toPrecision(6));
+const close=(a,b)=>Math.abs(a-b)<=0.01*Math.max(Math.abs(a),Math.abs(b),1e-9)+1e-6;
+/* ---------- physics ---------- */
+function calc(v,a,g,h){const s=Math.sin(rad(a)),c=Math.cos(rad(a)),vx=v*c,vy=v*s,T=(vy+Math.sqrt(vy*vy+2*g*h))/g;return{v,a,g,h,T,H:h+vy*vy/(2*g),R:vx*T,vx,vy}}
+function consts(g,h){const k=s=>S[s].m==='k'?S[s].x:undefined,T=k('T'),R=k('R'),H=k('H'),t=k('pt'),x=k('px'),y=k('py'),C=[];
+ const vxy=(v,a)=>[v*Math.cos(rad(a)),v*Math.sin(rad(a))],Tf=(v,a)=>{const vy=vxy(v,a)[1];return(vy+Math.sqrt(vy*vy+2*g*h))/g};
+ if(T!==undefined)C.push({f:Tf,y:T});
+ if(R!==undefined)C.push({f:(v,a)=>vxy(v,a)[0]*Tf(v,a),y:R});
+ if(H!==undefined)C.push({f:(v,a)=>h+Math.pow(vxy(v,a)[1],2)/(2*g),y:H});
+ const n=[t,x,y].filter(z=>z!==undefined).length;
+ if(n>=2){
+  if(t!==undefined&&x!==undefined)C.push({f:(v,a)=>vxy(v,a)[0]*t,y:x});
+  if(t!==undefined&&y!==undefined)C.push({f:(v,a)=>h+vxy(v,a)[1]*t-.5*g*t*t,y:y});
+  if(x!==undefined&&y!==undefined&&t===undefined)C.push({f:(v,a)=>{const c=Math.cos(rad(a));return h+x*Math.tan(rad(a))-g*x*x/(2*v*v*c*c)},y:y});
+ }
+ return C}
+// নির্দিষ্ট কোণে একটি শর্ত থেকে v বের করা (v বাড়লে সব রাশি বাড়ে, তাই bisection)
+function solveV(c,a){let lo=1e-4,hi=1e8;const flo=c.f(lo,a)-c.y,fhi=c.f(hi,a)-c.y;if(!(flo<0&&fhi>0))return NaN;for(let i=0;i<220;i++){const m=Math.sqrt(lo*hi),fm=c.f(m,a)-c.y;if(fm<0)lo=m;else hi=m;if(hi/lo<1+1e-13)break}return Math.sqrt(lo*hi)}
+const AG=[];for(let i=1;i<1800;i++)AG.push(i*0.05);
+function rootsA(fn){const V=AG.map(fn),L=[];let valid=0,flat=0;V.forEach(y=>{if(!isNaN(y)){valid++;if(Math.abs(y)<1e-7)flat++}});
+ if(valid>20&&flat>valid*.5)return{flat:true,list:[]};
+ const bis=(lo,hi,flo)=>{for(let k=0;k<60;k++){const m=(lo+hi)/2,fm=fn(m);if(isNaN(fm))break;if(fm===0)return m;if((fm<0)===(flo<0))lo=m;else hi=m}return(lo+hi)/2};
+ for(let i=0;i<AG.length-1;i++){const y0=V[i],y1=V[i+1];if(isNaN(y0)||isNaN(y1))continue;if(y0===0)L.push(AG[i]);else if(y0*y1<0)L.push(bis(AG[i],AG[i+1],y0))}
+ for(let i=1;i<AG.length-1;i++){const y=V[i];if(isNaN(y)||isNaN(V[i-1])||isNaN(V[i+1]))continue;const ay=Math.abs(y);
+  if(ay<Math.abs(V[i-1])&&ay<=Math.abs(V[i+1])&&ay<.02&&V[i-1]*y>0&&y*V[i+1]>0){let lo=AG[i-1],hi=AG[i+1];for(let k=0;k<60;k++){const m1=lo+(hi-lo)*.382,m2=lo+(hi-lo)*.618;if(Math.abs(fn(m1))<Math.abs(fn(m2)))hi=m2;else lo=m1}const m=(lo+hi)/2;if(Math.abs(fn(m))<1e-4)L.push(m)}}
+ L.sort((a,b)=>a-b);const o=[];L.forEach(a=>{if(!o.length||a-o[o.length-1]>1e-3)o.push(a)});return{flat:false,list:o}}
+const rel=(c,v,a)=>(c.f(v,a)-c.y)/Math.max(Math.abs(c.y),1e-9);
+function gen(C){ // null = অপর্যাপ্ত, [] = অসম্ভব
+ const kv=S.v.m==='k',ka=S.a.m==='k';
+ if(kv&&ka)return[[S.v.x,S.a.x]];
+ if(ka){if(!C.length)return null;for(const c of C){const v=solveV(c,S.a.x);if(isFinite(v))return[[v,S.a.x]]}return[]}
+ if(kv){if(!C.length)return null;const v=S.v.x;for(const c of C){const r=rootsA(a=>rel(c,v,a));if(r.flat)continue;return r.list.map(a=>[v,a])}return null}
+ if(C.length<2)return null;
+ for(let i=0;i<C.length;i++)for(let j=i+1;j<C.length;j++){const ci=C[i],cj=C[j];const r=rootsA(a=>{const v=solveV(ci,a);return isFinite(v)?rel(cj,v,a):NaN});if(r.flat)continue;return r.list.map(a=>[solveV(ci,a),a])}
+ return null}
+function probe(){const k=s=>S[s].m==='k'?S[s].x:undefined,t=k('pt'),x=k('px'),y=k('py');
+ if(t===undefined&&x===undefined&&y===undefined)return{pts:[]};
+ let ts=[];if(t!==undefined)ts=[t];else if(x!==undefined)ts=[x/P.vx];else{const d=P.vy*P.vy-2*P.g*(y-P.h);if(d>=0){const s=Math.sqrt(d);ts=[(P.vy-s)/P.g,(P.vy+s)/P.g]}}
+ ts=ts.filter(q=>q>=-1e-9&&q<=P.T*(1+1e-9)).map(q=>Math.min(Math.max(q,0),P.T));
+ if(ts.length===2&&Math.abs(ts[0]-ts[1])<1e-9)ts.pop();
+ const pts=ts.map(q=>{const vy=P.vy-P.g*q;return{t:q,x:P.vx*q,y:Math.max(0,P.h+P.vy*q-.5*P.g*q*q),vx:P.vx,vy,v:Math.hypot(P.vx,vy),ang:deg(Math.atan2(vy,P.vx))}});
+ return{pts,warn:pts.length?'':'দেওয়া বিন্দুটি গতিপথের (০ ≤ t ≤ T) মধ্যে পড়ছে না। মান যাচাই করো।'}}
+function solveGH(){const k=GQ.g?'g':'h';
+ if(GQ.g&&GQ.h)return{err:'g ও h₀ একসাথে নির্ণয় করা যায় না — একটির মান দাও।',cls:'info'};
+ if(!(S.v.m==='k'&&S.a.m==='k'))return{err:(k==='g'?'g':'h₀')+' নির্ণয়ের জন্য v₀ ও θ₀ এর মান দাও (Y)।',cls:'info'};
+ const gv=S.g.m==='k'?S.g.x:9.8,hv=S.h.m==='k'?S.h.x:0,v=S.v.x,a=S.a.x,mk=u=>k==='g'?consts(u,hv):consts(gv,u),n=mk(k==='g'?9.8:0).length;
+ if(!n)return{err:(k==='g'?'g':'h₀')+' নির্ণয়ের জন্য আরও একটি শর্ত দাও (T, R, H অথবা নির্দিষ্ট বিন্দুর মান)।',cls:'info'};
+ const inc=k==='h';
+ for(let ci=0;ci<n;ci++){const F=u=>{const c=mk(u)[ci];return c.f(v,a)-c.y};
+  let lo=k==='g'?1e-4:0,hi=k==='g'?1e6:1e8;const flo=F(lo),fhi=F(hi);
+  if(!(isFinite(flo)&&isFinite(fhi)))continue;if(inc?!(flo<0&&fhi>0):!(flo>0&&fhi<0))continue;
+  for(let it=0;it<300;it++){const m=k==='g'?Math.sqrt(lo*hi):(lo+hi)/2,fm=F(m);if((fm<0)===inc)lo=m;else hi=m}
+  return{val:k==='g'?Math.sqrt(lo*hi):(lo+hi)/2}}
+ return{err:'দেওয়া মানগুলো দিয়ে '+(k==='g'?'g':'h₀')+' নির্ণয় সম্ভব নয় — মান যাচাই করো।',cls:'warn'}}
+function solve(pick){
+ choices=null;for(const k of['v','a','T','R','H',...PQ])if(S[k].m==='c')S[k]={m:'u'};
+ if(GQ.g)S.g={m:'u'};if(GQ.h)S.h={m:'u'};
+ let g=S.g.m==='k'?S.g.x:null,h=S.h.m==='k'?S.h.x:0;
+ if(GQ.g||GQ.h){const r=solveGH();if(r.err){P=null;Qp=[];say(r.cls,r.err);return draw()}if(GQ.g){g=r.val;S.g={m:'c',x:g}}else{h=r.val;S.h={m:'c',x:h}}}
+ if(!g){P=null;Qp=[];say('warn','অভিকর্ষজ ত্বরণ (g) অজানা — g এর মান দাও।');return draw()}
+ const C=consts(g,h);let c=gen(C);
+ if(c===null){P=null;Qp=[];say('info',S.H.m==='k'&&S.T.m==='k'&&S.v.m!=='k'&&S.a.m!=='k'?'H ও T থেকে শুধু উল্লম্ব বেগ (v₀ sinθ₀) পাওয়া যায়; v₀ ও θ₀ আলাদাভাবে নির্ণয় করা যায় না। আরেকটি মান (যেমন θ₀, v₀ বা R) দাও।':'মান নির্ণয়ের জন্য যথেষ্ট তথ্য নেই। অন্তত দুটি স্বাধীন মান (যেমন v₀ ও θ₀) দাও; বাকিগুলো অজানা থাকবে।');return draw()}
+ const pre=c.length;
+ c=c.filter(([v,a])=>isFinite(v)&&v>0&&a>=0&&a<90&&!(a===0&&!(h>0))&&C.every(k=>close(k.f(v,a),k.y)));
+ if(!c.length){P=null;Qp=[];say('warn',pre?'দেওয়া মানগুলো পরস্পর অসংগত — প্রাসের সূত্রের সাথে মেলে না। মান যাচাই করো।':'দেওয়া মানগুলো দিয়ে বাস্তবসম্মত প্রাস সম্ভব নয় (যেমন sinθ > 1 হচ্ছে)।');return draw()}
+ if(c.length>1&&!(pick!=null&&c[pick])){P=null;Qp=[];choices=c;say('info','');return draw()}
+ const[v,a]=c[pick!=null&&c[pick]?pick:0];P=calc(v,a,g,h);
+ const pr=probe();Qp=pr.pts;
+ const fill=(k,x)=>{if(S[k].m!=='k')S[k]={m:'c',x}};fill('v',P.v);fill('a',P.a);fill('T',P.T);fill('R',P.R);fill('H',P.H);
+ if(Qp.length){const q=Qp[Qp.length-1];fill('pt',q.t);fill('px',q.x);fill('py',q.y)}
+ const unkP=PQ.filter(k=>!X[k]&&S[k].m!=='k'),anyP=PQ.some(k=>S[k].m==='k');
+ if(pr.warn)say('warn',pr.warn);else if(unkP.length&&!anyP)say('info','নির্দিষ্ট বিন্দুর t, x, y নির্ণয়ের জন্য এদের যেকোনো একটির মান দাও (Y) — যেমন y দিলে বল কখন ও কোথায় ওই উচ্চতায় থাকে তা বের হবে।');else say('','');tt=Math.min(tt,P.T);draw();}
+function say(cls,t){const m=$('msg');m.innerHTML='';if(choices){const d=document.createElement('div');d.className='info';d.innerHTML='<b>একাধিক সমাধান আছে।</b> একটি বেছে নাও:';choices.forEach(([v,a],i)=>{const b=document.createElement('button');b.className='btn';b.textContent=HIDE?'সমাধান '+(i+1):'θ₀ = '+f(a)+'°, v₀ = '+f(v)+' m/s';b.onclick=()=>solve(i);d.appendChild(b)});m.appendChild(d)}else if(t){const d=document.createElement('div');d.className=cls;d.textContent=t;m.appendChild(d)}}
+/* ---------- cards ---------- */
+const DEF={},DV={g:9.8,h:0};
+function togg(k){if(!HIDE){HIDE=true;REV={};if(choices)say('','')}else REV[k]=!REV[k];draw()}
+function build(){const top=$('top');for(const[k,n,sy]of Q){const d=document.createElement('div');d.className='card u';
+ const un='<div class="un"><select aria-label="একক">'+UN[k].map(u=>`<option value="${u[1]}">${u[0]}</option>`).join('')+'</select><i>▽</i></div>';
+ d.innerHTML=`<div class="top">${n}, ${sy}<b></b></div><input inputmode="decimal" autocomplete="off" placeholder="?" aria-label="${n}">${un}<div class="yn"><button title="মান দেব">Y</button><button title="লাগবে না">N</button><button title="নির্ণয় করব (উত্তর লুকানো থাকবে)">🔒</button></div>`;
+ top.appendChild(d);const i=d.querySelector('input'),b=d.querySelectorAll('.yn button'),gh=k==='g'||k==='h';IN[k]=i;CD[k]=d;
+ if(gh){
+  b[0].onclick=()=>{GQ[k]=false;DEF[k]=false;clearAns();S[k]={m:'k',x:DV[k]};i.value=String(DV[k]);tt=0;solve();i.focus();i.select()};
+  b[1].onclick=()=>{GQ[k]=false;DEF[k]=true;clearAns();S[k]={m:'k',x:DV[k]};i.classList.remove('bad');tt=0;solve()};
+  b[2].onclick=()=>{if(GQ[k]){togg(k);return}GQ[k]=true;DEF[k]=false;clearAns();i.value='';i.classList.remove('bad');S[k]={m:'u'};tt=0;solve()}}
+ else{b[0].onclick=()=>{X[k]=false;YF[k]=true;clearAns();if(S[k].m!=='k')i.value='';tt=0;solve();i.focus()};
+  b[1].onclick=()=>{X[k]=true;YF[k]=false;clearAns();i.value='';i.classList.remove('bad');S[k]={m:'u'};tt=0;solve()};
+  b[2].onclick=()=>{if(AM(k)){togg(k);return}X[k]=false;YF[k]=false;clearAns();i.value='';i.classList.remove('bad');S[k]={m:'u'};tt=0;solve()}}
+ i.oninput=()=>edit(k);i.onblur=render;i.onkeydown=e=>{if(e.key==='Enter')i.blur()};
+ d.querySelector('select').onchange=e=>{uf[k]=+e.target.value;if(gh&&DEF[k]&&!GQ[k])return;if(AM(k)){check();return}if(S[k].m==='k')edit(k);else render()}}}
+function resetAll(){for(const k of['v','a','T','R','H',...PQ]){S[k]={m:'u'};IN[k].value='';IN[k].classList.remove('bad')}
+ for(const k in X)delete X[k];for(const k in YF)delete YF[k];for(const k in GQ)delete GQ[k];PQ.forEach(k=>X[k]=true);
+ S.g={m:'k',x:9.8};IN.g.value='9.8';S.h={m:'k',x:0};IN.h.value='0';DEF.g=false;DEF.h=true;IN.g.classList.remove('bad');IN.h.classList.remove('bad');
+ document.querySelectorAll('.card select').forEach(s=>s.selectedIndex=0);for(const k in uf)uf[k]=1;
+ clearAns();P=null;Qp=[];tt=0;playing=false;choices=null}
+const AM=k=>(k==='g'||k==='h')?!!GQ[k]:(!X[k]&&!YF[k]);
+function clearAns(){for(const k in ANS)delete ANS[k];MATCH={};REV={};lastOk=false;hideClap()}
+function buildExtras(){const E=[];if(!P)return E;
+ E.push({key:'tm',n:'শীর্ষে পৌঁছানোর সময়',s:'tₘ',val:P.vy/P.g,u:'s'});
+ const vfy=Math.sqrt(P.vy*P.vy+2*P.g*P.h);
+ E.push({key:'vf',n:'ভূমিতে আঘাতের বেগ',s:'v_f',val:Math.hypot(P.vx,vfy),u:'m/s'},{key:'af',n:'আঘাতের কোণ (অনুভূমিকের সাথে)',s:'',val:deg(Math.atan2(vfy,P.vx)),u:'°'});
+ Qp.forEach((q,i)=>{const p='q'+i;E.push({key:p+'vx',n:'অনুভূমিক বেগ',s:'vₓ',val:q.vx,u:'m/s'},{key:p+'vy',n:'উল্লম্ব বেগ (চিহ্ন বাদে)',s:'vᵧ',val:Math.abs(q.vy),sfx:q.vy>=0?' ↑':' ↓',u:'m/s'},{key:p+'v',n:'লব্ধি বেগ',s:'v',val:q.v,u:'m/s'},{key:p+'a',n:'বেগের দিক (অনুভূমিকের সাথে)',s:'',val:Math.abs(q.ang),sfx:q.ang>=0?' ↑':' ↓',u:'°'})});
+ return E}
+const PK={pt:'t',px:'x',py:'y'};
+const truthOf=k=>(PK[k]&&Qp.length===2)?Qp.map(q=>q[PK[k]]):S[k].x;
+const showVal=k=>(PK[k]&&Qp.length===2)?Qp.map(q=>f(q[PK[k]]/uf[k])).join(' / '):f(S[k].x/uf[k]);
+function evalMatch(){MATCH={};let typed=0,allOk=true;
+ const test=(key,truth,fac)=>{const t=ANS[key];if(t===undefined||String(t).trim()==='')return;typed++;const x=Number(String(t).trim().replace(',','.'));
+  if(truth===null||truth===undefined||(Array.isArray(truth)&&!truth.length)){MATCH[key]=null;allOk=false;return}
+  const ok=isFinite(x)&&(Array.isArray(truth)?truth:[truth]).some(tv=>close(Math.abs(x)*fac,tv)&&(x>=0||tv===0));MATCH[key]=ok;if(!ok)allOk=false};
+ for(const[k]of Q)if(AM(k))test(k,S[k].m==='c'?truthOf(k):null,uf[k]);
+ for(const e of buildExtras())test(e.key,e.val,1);
+ return typed>0&&allOk}
+function check(){const prev=JSON.stringify(MATCH),ok=evalMatch();if(prev!==JSON.stringify(MATCH))draw();else render();if(ok&&!lastOk)celebrate();if(!ok)hideClap();lastOk=ok}
+let clapT=null;
+function hideClap(){const c=$('clap');if(c)c.classList.remove('on');clearTimeout(clapT)}
+function celebrate(){const c=$('clap');c.classList.add('on');clearTimeout(clapT);clapT=setTimeout(hideClap,7000);applause()}
+function applause(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const c=new AC(),sr=c.sampleRate,len=Math.floor(sr*2.2),b=c.createBuffer(1,len,sr),d=b.getChannelData(0);
+ for(let n=0;n<90;n++){const st=Math.floor(Math.random()*sr*1.9),dur=Math.floor(sr*.03);for(let j=0;j<dur&&st+j<len;j++)d[st+j]+=(Math.random()*2-1)*Math.exp(-j/(dur*.25))*.5}
+ const src=c.createBufferSource(),gn=c.createGain();gn.gain.value=.8;src.buffer=b;src.connect(gn);gn.connect(c.destination);src.start()}catch(e){}}
+function edit(k){const i=IN[k];
+ if(AM(k)){ANS[k]=i.value.trim();check();return}
+ const raw=i.value.trim().replace(',','.');clearAns();i.classList.remove('bad');
+ if(raw===''){S[k]=k==='h'?{m:'k',x:0}:{m:'u'};tt=0;return solve()}
+ const x=Number(raw),xs=x*uf[k],bad=!isFinite(x)||(k==='h'?xs<0:k==='a'?(xs<0||xs>=90||(xs===0&&!(S.h.x>0))):xs<=0);
+ if(bad){i.classList.add('bad');S[k]=k==='h'?{m:'k',x:0}:{m:'u'};tt=0;solve();say('warn',k==='a'?'নিক্ষেপ কোণ ০° থেকে ৯০° এর মধ্যে হতে হবে (০° শুধু উচ্চতা থেকে অনুভূমিক নিক্ষেপে)।':'সঠিক সংখ্যা লেখো (দশমিক চলবে, ঋণাত্মক নয়)।');return}
+ S[k]={m:'k',x:xs};tt=0;solve()}
+function render(){for(const[k]of Q){const st=S[k],i=IN[k],gh=k==='g'||k==='h',x=!!X[k],am=AM(k),hid=am&&HIDE&&!REV[k],dis=gh?(!am&&!!DEF[k]):x;
+ let cls;if(x)cls='x';else if(hid)cls=MATCH[k]===true?'c':MATCH[k]===false?'no':'u';else if(gh&&!am)cls='k';else cls=st.m;
+ CD[k].className='card '+cls+(PQ.includes(k)?' q':'');i.disabled=dis;
+ if(gh&&!am){if(DEF[k])i.value=String(DV[k])}
+ else{i.placeholder=x?'—':'?';
+  if(x)i.value='';
+  else if(hid){const v=ANS[k]||'';if(i.value!==v)i.value=v}
+  else if(st.m==='c'&&(!HIDE||(am&&REV[k])))i.value=showVal(k);
+  else if(st.m==='u'&&document.activeElement!==i&&!i.classList.contains('bad'))i.value=''}
+ const on=gh?(am?2:(DEF[k]?1:0)):(x?1:(YF[k]||st.m==='k')?0:2);CD[k].querySelectorAll('.yn button').forEach((e,j)=>e.classList.toggle('on',j===on));
+ {const b3=CD[k].querySelectorAll('.yn button')[2],shownNow=am&&(!HIDE||REV[k]);b3.textContent=shownNow?'👁':'🔒';b3.title=am?(shownNow?'উত্তর লুকাও':'উত্তর দেখাও'):'নির্ণয় করব (উত্তর লুকানো থাকবে)'}
+ CD[k].querySelector('.top b').textContent=(hid&&MATCH[k]===true?' ✓':hid&&MATCH[k]===false?' ✗':'')+((PQ.includes(k)&&!x&&Qp.length===2)?' — ২টি বিন্দু':'')}}
+/* ---------- result panels ---------- */
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const row=(n,s,v,u,mut)=>`<tr><td>${n}${s?' ('+s+')':''}</td><td class="${mut?'u':''}">${v}</td><td>${u}</td></tr>`;
+const shown=k=>!HIDE||S[k].m==='k'||MATCH[k]===true||!!REV[k];
+const exrow=e=>{if(!HIDE||REV[e.key])return row(e.n,e.s,f(e.val)+(e.sfx||''),e.u);const m=MATCH[e.key],c=m===true?'ok':m===false?'no':'';return`<tr><td>${e.n}${e.s?' ('+e.s+')':''}</td><td><input class="ans ${c}" data-k="${e.key}" value="${esc(ANS[e.key]||'')}" inputmode="decimal" autocomplete="off" placeholder="?"></td><td>${e.u}${m===true?' ✓':m===false?' ✗':''} <button class="eyeb" data-k="${e.key}" title="উত্তর দেখাও">👁</button></td></tr>`};
+function panels(){const ae=document.activeElement,ak=ae&&ae.classList&&ae.classList.contains('ans')?ae.dataset.k:null,pos=ak?ae.selectionStart:0;
+ const E=buildExtras(),ex=k=>E.filter(e=>e.key===k)[0],r=[];
+ if(P)r.push(exrow(ex('tm')),exrow(ex('vf')),exrow(ex('af')));$('rt').innerHTML=r.join('');$('rt').parentNode.style.display=r.length?'':'none';
+ const qp=$('qp');qp.style.display=Qp.length?'':'none';
+ if(Qp.length){let h='';const last=Qp.length-1;Qp.forEach((q,i)=>{const sq=k=>!HIDE||S[k].m==='k'||(i===last&&(MATCH[k]===true||REV[k])),vv=(k,val)=>sq(k)?f(val):'?';
+  if(Qp.length>1)h+=`<tr class="sub"><td colspan="3">বিন্দু ${i+1} — ${i===0?'আরোহণকালে':'অবরোহণকালে'}</td></tr>`;
+  h+=row('সময়','t',vv('pt',q.t),'s',!sq('pt'))+row('অনুভূমিক দূরত্ব','x',vv('px',q.x),'m',!sq('px'))+row('উচ্চতা','y',vv('py',q.y),'m',!sq('py'));
+  h+=E.filter(e=>e.key.indexOf('q'+i)===0).map(exrow).join('')});$('qt').innerHTML=h}
+ const pt=$('pt');pt.parentNode.style.display=HIDE?'none':'';
+ if(!P){pt.innerHTML='<tr><td class="u">গতিপথ নির্ণয়ের অপেক্ষায়…</td></tr>'}
+ else{let h='<tr><th>সময় (s)</th><th>x (m)</th><th>y (m)</th></tr>';for(let i=0;i<=4;i++){const t=P.T*i/4;h+=`<tr><td>${f(t)}</td><td>${f(P.vx*t)}</td><td>${f(Math.max(0,P.h+P.vy*t-.5*P.g*t*t))}</td></tr>`}pt.innerHTML=h}
+ if(ak){const n=document.querySelector('.ans[data-k="'+ak+'"]');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}}
+function hud(){if(!P){$('hud').innerHTML='';return}if(HIDE){$('hud').innerHTML=`t = ${f(tt)} s`;return}const vy=P.vy-P.g*tt;$('hud').innerHTML=`t = ${f(tt)} s<br>x = ${f(P.vx*tt)} m &nbsp; y = ${f(Math.max(0,P.h+P.vy*tt-.5*P.g*tt*tt))} m<br>vₓ = ${f(P.vx)} &nbsp; vᵧ = ${f(vy)}<br>v = ${f(Math.hypot(P.vx,vy))} m/s`}
+/* ---------- 3D ---------- */
+let scene,cam,rend,ctl,grp,ball,va,sun,ready=typeof THREE!=='undefined'&&THREE.OrbitControls,D={},TX={};
+function nice(r){const m=Math.pow(10,Math.floor(Math.log10(r)));for(const k of[1,2,5,10])if(k*m>=r)return k*m}
+function sprite(t,size,col='#06305f',bg=null){const F='600 38px "Hind Siliguri","Noto Sans Bengali",sans-serif',mc=document.createElement('canvas').getContext('2d');mc.font=F;const w=Math.max(64,Math.ceil(mc.measureText(t).width)+36);
+ const c=document.createElement('canvas');c.width=w;c.height=64;const x=c.getContext('2d');if(bg){x.fillStyle=bg;x.beginPath();x.roundRect?x.roundRect(2,6,w-4,52,12):x.rect(2,6,w-4,52);x.fill()}x.font=F;x.fillStyle=col;x.textAlign='center';x.textBaseline='middle';x.fillText(t,w/2,34);
+ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false,fog:false}));s.scale.set(size*w/256,size/4,1);s.renderOrder=9;return s}
+function line(p,col,dash,sc){const g=new THREE.BufferGeometry().setFromPoints(p.map(q=>new THREE.Vector3(...q)));const m=dash?new THREE.LineDashedMaterial({color:col,dashSize:sc*.02,gapSize:sc*.015}):new THREE.LineBasicMaterial({color:col});const l=new THREE.Line(g,m);if(dash)l.computeLineDistances();return l}
+function cv(w,h,fn){const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t}
+function textures(){if(TX.g)return;
+ TX.g=cv(512,256,(x,w,h)=>{x.fillStyle='#5aa843';x.fillRect(0,0,w/2,h);x.fillStyle='#4a963a';x.fillRect(w/2,0,w/2,h);for(let i=0;i<9000;i++){x.fillStyle=`hsla(${85+Math.random()*35},55%,${26+Math.random()*24}%,.45)`;x.fillRect(Math.random()*w,Math.random()*h,1.5,3)}});
+ TX.g.wrapS=TX.g.wrapT=THREE.RepeatWrapping;TX.g.anisotropy=8;
+ TX.b=cv(256,128,(x,w,h)=>{x.fillStyle='#fff';x.fillRect(0,0,w,h);x.fillStyle='#222';for(let i=0;i<7;i++){const cx=(i+.5)*w/7,cy=i%2?h*.3:h*.7;x.beginPath();for(let j=0;j<5;j++){const t=j*1.2566+.3;x.lineTo(cx+Math.cos(t)*14,cy+Math.sin(t)*14)}x.fill()}});
+ TX.c=cv(256,128,(x,w,h)=>{const r=x.createRadialGradient(128,64,5,128,64,100);r.addColorStop(0,'rgba(255,255,255,.95)');r.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=r;x.fillRect(0,0,w,h)})}
+function initGL(){const el=$('view');scene=new THREE.Scene();cam=new THREE.PerspectiveCamera(42,1,.1,1e6);
+ rend=new THREE.WebGLRenderer({antialias:true});rend.setClearColor(0xcfe5f5);rend.outputEncoding=THREE.sRGBEncoding;rend.shadowMap.enabled=true;rend.shadowMap.type=THREE.PCFSoftShadowMap;
+ el.insertBefore(rend.domElement,el.firstChild);ctl=new THREE.OrbitControls(cam,rend.domElement);ctl.enableDamping=true;ctl.maxPolarAngle=Math.PI/2-.02;
+ scene.add(new THREE.HemisphereLight(0xcfe8ff,0x4a7a3a,.85));sun=new THREE.DirectionalLight(0xfff2d8,.9);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun,sun.target);
+ new ResizeObserver(()=>{const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;rend.setPixelRatio(Math.min(Math.max(1,devicePixelRatio*curK),3));rend.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix();setCam()}).observe(el);
+ (function loop(){const n=performance.now(),dt=Math.min((n-(loop.l||n))/1000,.1);loop.l=n;if(playing&&P){tt+=dt*spd*rate();if(tt>=P.T){tt=P.T;playing=false}upd()}ctl.update();rend.render(scene,cam);requestAnimationFrame(loop)})()}
+const rate=()=>P?P.T/Math.min(Math.max(P.T,2),12):1;
+function sp(){$('spd').textContent='গতি: '+spd+'×'+(P&&Math.abs(rate()-1)>.02?' (বাস্তবের '+f(rate()*spd)+' গুণ)':'')}
+function draw(){evalMatch();render();panels();hud();const ph=$('ph');sp();fit();
+ if(!ready){ph.style.display='flex';ph.textContent='3D লাইব্রেরি লোড হয়নি — ইন্টারনেট সংযোগ দিয়ে পাতাটি আবার খোলো। (হিসাব ও ফলাফল ঠিকভাবেই কাজ করছে)';return}
+ if(grp){scene.remove(grp);grp.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.isSprite&&o.material.map&&o.material.map!==TX.c)o.material.map.dispose()})}grp=null;ball=null;
+ ph.style.display=P?'none':'flex';ph.textContent='গতিপথ দেখতে প্রয়োজনীয় মান দাও (যেমন v₀ ও θ₀)।';if(!P)return;textures();
+ const{v,a,g,T,H,R,vx,vy,h}=P,ext=Math.max(R,2*H,1e-9),step=nice(ext/6),Lx=Math.max(step,Math.ceil(R*1.15/step)*step),Hy=Math.max(step,Math.ceil(H*1.3/step)*step),sc=Math.max(Lx,Hy);D={Lx,Hy,sc};
+ const shw=k=>!HIDE||S[k].m==='k'||MATCH[k]===true||!!REV[k],shq=(k,i)=>!HIDE||S[k].m==='k'||(i===Qp.length-1&&(MATCH[k]===true||!!REV[k]));grp=new THREE.Group();scene.add(grp);scene.fog=new THREE.Fog(0xcfe5f5,sc*5,sc*38);
+ let sd=7;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,add=(...o)=>o.forEach(x=>grp.add(x));
+ // sky
+ const SR=sc*90,sk=new THREE.SphereGeometry(SR,24,12),pa=sk.attributes.position,cs=[];for(let i=0;i<pa.count;i++){const t=Math.max(0,pa.getY(i)/SR),c=new THREE.Color(0xe6f2fc).lerp(new THREE.Color(0x2e7ad1),Math.pow(t,.5));cs.push(c.r,c.g,c.b)}
+ sk.setAttribute('color',new THREE.Float32BufferAttribute(cs,3));const sm=new THREE.Mesh(sk,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide,fog:false}));sm.position.set(Lx/2,0,0);add(sm);
+ for(let i=0;i<10;i++){const c=new THREE.Sprite(new THREE.SpriteMaterial({map:TX.c,transparent:true,fog:false,depthWrite:false}));const w=sc*(2+rnd()*3);c.scale.set(w,w*.35,1);c.position.set(Lx/2+(rnd()-.5)*sc*30,sc*(3+rnd()*5),-sc*(6+rnd()*14));add(c)}
+ // ground
+ const G=sc*80,gt=TX.g;gt.repeat.set(G/(2*step),G/step);gt.offset.x=(Lx/2-G/2)/(2*step);
+ const gm=new THREE.Mesh(new THREE.PlaneGeometry(G,G),new THREE.MeshStandardMaterial({map:gt,roughness:1}));gm.rotation.x=-Math.PI/2;gm.position.set(Lx/2,0,0);gm.receiveShadow=true;add(gm);
+ const gr=new THREE.GridHelper(Lx,Math.round(Lx/step),0xffffff,0xffffff);gr.material.transparent=true;gr.material.opacity=.3;gr.scale.z=.6;gr.position.set(Lx/2,sc*.0008,0);add(gr);
+ // scenery
+ for(let i=0;i<24;i++){const an=Math.PI*2*i/24+rnd()*.2,hh=sc*(2+rnd()*3),r0=sc*(24+rnd()*8),m=new THREE.Mesh(new THREE.ConeGeometry(hh*.9,hh,6),new THREE.MeshLambertMaterial({color:new THREE.Color(0x6a86a3).lerp(new THREE.Color(0x8aa0b5),rnd())}));m.position.set(Lx/2+Math.cos(an)*r0,hh/2,Math.sin(an)*r0);add(m)}
+ // axes & ticks
+ add(line([[0,0,0],[Lx*1.05,0,0]],0xffffff),line([[0,0,0],[0,Hy*1.05,0]],0x06305f),line([[0,0,0],[0,0,Lx*.3]],0xdddddd));
+ const lab=(t,sz,p,c='#fff',b='#06305fb8')=>{const s=sprite(t,sz*1.2,c,b);s.position.set(...p);add(s)};
+ lab('x (m)',sc*.16,[Lx*1.1,0,0]);lab('y (m)',sc*.16,[0,Hy*1.1,0]);lab('z',sc*.08,[0,0,Lx*.33]);
+ for(let i=0;i*step<=Lx+1e-9;i++)lab(tk(i*step),sc*.1,[i*step,-sc*.04,sc*.03]);
+ for(let j=1;j*step<=Hy+1e-9;j++)lab(tk(j*step),sc*.1,[-sc*.05,j*step,0]);
+ // trajectory
+ const yAt=t=>Math.max(0,h+vy*t-.5*g*t*t);
+ const pts=[];for(let i=0;i<=160;i++){const t=T*i/160;pts.push([vx*t,yAt(t),0])}add(line(pts,0xd62828),line(pts.map(p=>[p[0],sc*.002,0]),0x1d3b17));
+ const dg=new THREE.SphereGeometry(sc*.007,8,8),dm=new THREE.MeshBasicMaterial({color:0xe63946});for(let i=0;i<=48;i++){const t=T*i/48,m=new THREE.Mesh(dg,dm);m.position.set(vx*t,yAt(t),0);add(m)}
+ // tower (h>0)
+ if(h>0){const tw=new THREE.Mesh(new THREE.BoxGeometry(sc*.07,h,sc*.1),new THREE.MeshStandardMaterial({color:0xb08968,roughness:.9}));tw.position.set(0,h/2,0);tw.castShadow=true;tw.receiveShadow=true;add(tw);
+  lab('h₀ = '+(shw('h')?f(h)+' m':'?'),sc*.25,[-sc*.2,h/2,0])}
+ // launcher
+ const bl=sc*.07,bar=new THREE.Mesh(new THREE.CylinderGeometry(sc*.011,sc*.015,bl,16),new THREE.MeshStandardMaterial({color:0x333a44,metalness:.6,roughness:.4}));bar.rotation.z=-(Math.PI/2-rad(a));bar.position.set(Math.cos(rad(a))*bl*.5,h+Math.sin(rad(a))*bl*.5,0);bar.castShadow=true;
+ const bs=new THREE.Mesh(new THREE.CylinderGeometry(sc*.025,sc*.03,sc*.012,20),new THREE.MeshStandardMaterial({color:0x555e6b}));bs.position.set(0,h+sc*.006,0);bs.castShadow=true;add(bar,bs);
+ // markers
+ const ar=[];for(let i=0;i<=30;i++){const q=rad(a)*i/30;ar.push([sc*.1*Math.cos(q),h+sc*.1*Math.sin(q),0])}add(line(ar,0xffd23f));
+ lab('θ₀ = '+(shw('a')?f(a)+'°':'?'),sc*.25,[sc*.2,h+sc*.035,0],'#ffe680');lab('v₀ = '+(shw('v')?f(v)+' m/s':'?'),sc*.3,[-sc*.2,h+sc*.15,0]);
+ if(!X.H){const xa=vx*vy/g;add(line([[xa,0,0],[xa,H,0]],0xffffff,true,sc));const ap=new THREE.Mesh(new THREE.SphereGeometry(sc*.014,12,12),new THREE.MeshBasicMaterial({color:0xff2d2d}));ap.position.set(xa,H,0);add(ap);lab('H_max = '+(shw('H')?f(H)+' m':'?'),sc*.27,[xa,H+sc*.06,0])}
+ if(!X.R){const ry=sc*.002,rz=sc*.09;add(line([[0,ry,rz],[R,ry,rz]],0xffffff),line([[0,ry,rz*.6],[0,ry,rz*1.4]],0xffffff),line([[R,ry,rz*.6],[R,ry,rz*1.4]],0xffffff));lab('R = '+(shw('R')?f(R)+' m':'?'),sc*.27,[R/2,sc*.03,rz]);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(sc*.02,sc*.03,32),new THREE.MeshBasicMaterial({color:0xff4d4d,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(R,sc*.003,0);add(ring)}
+ // নির্দিষ্ট বিন্দু (t, x, y)
+ Qp.forEach((q,qi)=>{const pm=new THREE.Mesh(new THREE.SphereGeometry(sc*.016,16,12),new THREE.MeshBasicMaterial({color:0x2ecc71}));pm.position.set(q.x,q.y,0);add(pm);
+  add(line([[q.x,0,0],[q.x,q.y,0]],0xffffff,true,sc),line([[0,q.y,0],[q.x,q.y,0]],0xffffff,true,sc));
+  const L=sc*.18,d=new THREE.Vector3(q.vx,q.vy,0).normalize();add(new THREE.ArrowHelper(d,new THREE.Vector3(q.x,q.y,0),L,0x9b30ff,L*.25,L*.12));
+  lab('t='+(shq('pt',qi)?f(q.t)+' s':'?')+'  ('+(shq('px',qi)?f(q.x):'?')+', '+(shq('py',qi)?f(q.y):'?')+')',sc*.27,[q.x,q.y+sc*.075,0],'#fff','#1a7a46d8');
+  lab('v = '+(!HIDE||MATCH['q'+qi+'v']===true||REV['q'+qi+'v']?f(q.v)+' m/s':'?'),sc*.27,[q.x+d.x*L+sc*.12,q.y+d.y*L+(d.y>=0?sc*.03:-sc*.04),0],'#fff','#6a1fbfd8')});
+ // ball & velocity arrow
+ ball=new THREE.Mesh(new THREE.SphereGeometry(sc*.02,32,24),new THREE.MeshStandardMaterial({map:TX.b,roughness:.5}));ball.castShadow=true;add(ball);
+ va=new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(),sc*.2,0xff8800,sc*.05,sc*.025);add(va);
+ sun.position.set(Lx/2-sc*.8,sc*2.2,sc*1.2);sun.target.position.set(Lx/2,0,0);const sh=sun.shadow.camera;sh.left=sh.bottom=-Lx;sh.right=sh.top=Lx;sh.near=sc*.1;sh.far=sc*8;sh.updateProjectionMatrix();
+ upd();setCam()}
+function upd(){if(!P||!ball)return;const x=P.vx*tt,y=Math.max(0,P.h+P.vy*tt-.5*P.g*tt*tt),vy=P.vy-P.g*tt,sp=Math.hypot(P.vx,vy),L=D.sc*.2*Math.max(.25,sp/P.v);
+ ball.position.set(x,y+D.sc*.02*(y===0?1:0),0);ball.rotation.z=-tt*3;va.position.copy(ball.position);va.setDirection(new THREE.Vector3(P.vx/sp,vy/sp,0));va.setLength(L,L*.25,L*.12);$('tl').value=Math.round(tt/P.T*1000);hud()}
+function setCam(){if(!P||!cam||!D.sc)return;const{Lx,Hy,sc}=D,tn=Math.tan(rad(21)),d=Math.max(Lx*.62/(tn*cam.aspect),Hy*.85/tn)*1.05,cy=Hy*.4;ctl.target.set(Lx/2,cy,0);cam.near=sc*.01;cam.far=sc*250;cam.updateProjectionMatrix();ctl.minDistance=sc*.2;ctl.maxDistance=sc*25;
+ if(side){cam.position.set(Lx/2,cy,d);ctl.enableRotate=false}else{const az=rad(30),el=rad(14);cam.position.set(Lx/2+d*Math.sin(az)*Math.cos(el),cy+d*Math.sin(el),d*Math.cos(az)*Math.cos(el));ctl.enableRotate=true}ctl.update()}
+/* ---------- events ---------- */
+$('solve').onclick=()=>{tt=0;solve()};$('show').onclick=()=>{solve();if(P){tt=0;playing=true}};
+$('rst').onclick=()=>{resetAll();say('','');YF.v=false;draw()};
+$('res').addEventListener('input',e=>{const t=e.target;if(t.classList&&t.classList.contains('ans')){ANS[t.dataset.k]=t.value;check()}});
+$('clap').onclick=hideClap;
+$('xp').querySelector('h2').onclick=()=>$('xp').classList.toggle('open');
+$('res').addEventListener('click',e=>{const t=e.target;if(t.classList&&t.classList.contains('eyeb')){REV[t.dataset.k]=!REV[t.dataset.k];draw()}});
+$('play').onclick=()=>{if(P){if(tt>=P.T)tt=0;playing=true}};$('pause').onclick=()=>playing=false;$('restart').onclick=()=>{tt=0;playing=!!P;upd()};
+$('fast').onclick=()=>{spd=Math.min(8,spd*2);sp()};$('slow').onclick=()=>{spd=Math.max(.125,spd/2);sp()};
+$('tl').oninput=e=>{if(!P)return;playing=false;tt=P.T*e.target.value/1000;upd()};
+const tab=s=>{side=s;$('b3').classList.toggle('on',!s);$('bs').classList.toggle('on',s);setCam()};$('b3').onclick=()=>tab(false);$('bs').onclick=()=>tab(true);$('bc').onclick=()=>setCam();
+$('fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()};
+let DESK=false;try{DESK=localStorage.getItem('deskMode')==='1'}catch(e){}
+function fit(){const W=innerWidth,H=innerHeight,p=!DESK&&(W<H*.85||W<720),st=$('stage');$('dk').textContent=DESK?'📱 মোবাইল মোড':'🖥 ডেক্সটপ মোড';st.classList.toggle('p',p);let k,lw,lh;
+ if(p){lw=620;k=W/lw;st.style.width=lw+'px';st.style.height='auto';lh=st.offsetHeight;document.body.style.overflowY='auto'}
+ else{const bw=DESK?1280:1440,bh=DESK?720:810;k=Math.min(W/bw,H/bh);lw=W/k;lh=DESK?Math.min(H/k,lw*.62):H/k;st.style.width=lw+'px';st.style.height=lh+'px';document.body.style.overflowY='hidden'}
+ curK=k;st.style.transform='scale('+k+')';$('wrap').style.width=W+'px';$('wrap').style.height=lh*k+'px';$('wrap').style.marginTop=(!p&&DESK&&lh*k<H)?(H-lh*k)/2+'px':'0'}
+$('dk').onclick=()=>{DESK=!DESK;try{localStorage.setItem('deskMode',DESK?'1':'0')}catch(e){}fit();draw()};
+addEventListener('resize',fit);build();resetAll();S.v={m:'k',x:20};IN.v.value='20';S.a={m:'k',x:45};IN.a.value='45';YF.v=true;YF.a=true;fit();if(ready)initGL();solve();
+</script></body></html>
