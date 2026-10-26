@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -11,8 +10,8 @@
 *{box-sizing:border-box}html,body{height:100%;margin:0;background:#041f40}#wrap{position:relative;overflow:hidden}
 body{font-family:'Hind Siliguri','Noto Sans Bengali','Kalpurush','Vrinda',sans-serif;color:var(--ink)}
 #stage{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
-header{height:76px;projectile_simulation_3.html-items:center;flex:none;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
-header h1{margin:0;font-size:projectile_simulation_3.html;font-weight:700;white-space:nowrap}
+header{height:76px;align-items:center;flex:none;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+header h1{margin:0;font-size:30px;font-weight:700;white-space:nowrap}
 .tools{display:flex;gap:8px;align-items:center}
 .tools button,.tools select{background:#ffffff22;color:#fff;border:1px solid #ffffff66;border-radius:8px;padding:5px 12px;font:inherit;font-size:16px;cursor:pointer}
 
@@ -53,7 +52,6 @@ header h1{margin:0;font-size:projectile_simulation_3.html;font-weight:700;white-
 /* result panels */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 12px 8px;box-shadow:0 2px 6px #06305f14;flex:none}
 .panel h2{margin:0 0 3px;font-size:18px;color:var(--navy)}
-.fold h2{cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;margin:0}.fold h2::after{content:"▾";font-size:16px;transition:transform .2s}.fold.shut h2::after{transform:rotate(90deg)}.fold:not(.shut) h2{margin-bottom:3px}.fold.shut table{display:none}
 table{width:100%;border-collapse:collapse}td,th{padding:3px 3px;border-bottom:1px solid var(--line);text-align:left;font-size:16px}
 td:nth-child(2),th:nth-child(2),td:nth-child(3),th:nth-child(3){text-align:right}td.u{color:var(--mut)}td:nth-child(3){color:var(--mut);width:56px}
 tr.sub td{background:#eef5fd;font-weight:600;color:var(--navy);text-align:left!important}
@@ -109,14 +107,28 @@ footer{height:34px;flex:none;background:var(--navy);color:#fff;display:flex;alig
 .credit{margin-left:22px;text-align:right;font-size:12px;line-height:1.3;opacity:.95;white-space:nowrap}
 .credit b{display:block;font-size:19px;font-weight:700;line-height:1.25;opacity:1}
 .p .credit{grid-area:c;margin:0;text-align:right;font-size:11px}.p .credit b{font-size:15px}
+.tgl{cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center}.tgl::after{content:'▾';font-size:16px;color:var(--mut)}#xp:not(.open) .tgl::after{content:'▸'}#xp:not(.open) table{display:none}#xp:not(.open) h2{margin-bottom:0}
+
+/* প্রজেক্টর / ক্লাসরুম: বড় লেখা */
+header{height:88px}header h1{font-size:36px}.credit{font-size:14px}.credit b{font-size:23px}
+#main{grid-template-columns:560px minmax(0,1fr)}
+.card{grid-template-columns:minmax(0,1fr) 32px;grid-template-rows:auto 42px 30px}
+.card .top{font-size:14.5px}.card input{font-size:23px}.card .un select{font-size:14px}
+.yn button,.yn button:nth-child(3){font-size:15px}
+.tools button{font-size:17px}
+#show{height:38px;font-size:17px}#solve{height:38px;font-size:15px}
+#vbar button,.ctl button{font-size:18px}#hud{font-size:20px}.ctl span{font-size:17px}
+.panel h2{font-size:21px}td,th{font-size:18px}.ans{font-size:18px}
+footer{font-size:16px;height:38px}
 </style></head><body><div id="wrap"><div id="stage">
-<header><h1>প্রাসের গতি — ইন্টারঅ্যাকটিভ সিমুলেশন</h1><div class="tools"><button id="fs">⛶ পূর্ণ পর্দা</button><button id="rst">↺ নতুন সমস্যা</button></div><div class="credit"><b>মোঃ আমিরুল ইসলাম</b>প্রভাষক (পদার্থবিজ্ঞান)<br>হাজী জসীম উদ্দীন ডিগ্রী কলেজ<br>দুবলিয়া, পাবনা সদর, পাবনা।</div></header>
+<header><h1>প্রাসের গতি — ইন্টারঅ্যাকটিভ সিমুলেশন</h1><div class="tools"><button id="dk">🖥 ডেক্সটপ মোড</button><button id="fs">⛶ পূর্ণ পর্দা</button><button id="rst">↺ নতুন সমস্যা</button></div><div class="credit"><b>মোঃ আমিরুল ইসলাম</b>প্রভাষক (পদার্থবিজ্ঞান)<br>হাজী জসীম উদ্দীন ডিগ্রী কলেজ<br>দুবলিয়া, পাবনা সদর, পাবনা।</div></header>
 <div id="main">
 <section id="inp"><div id="top"></div><div id="bt"><button class="btn" id="show">▶ সিমুলেশন চালাও</button><button class="btn" id="solve">সমীকরণ থেকে মান নির্ণয়</button></div><div id="msg"></div></section>
 <div class="stage"><div id="view"><div id="vbar"><button id="b3" class="on">3D দৃশ্যপট</button><button id="bs">পাশের দৃশ্য</button><button id="bc">ক্যামেরা রিসেট</button></div><div id="hud"></div><div id="clap"><div class="em">👏</div><div class="tx">সাবাশ! উত্তর মিলে গেছে</div><div class="sb">সবাই হাততালি দাও!</div></div><div id="ph"></div></div>
 <div class="ctl"><button id="play">▶ চালাও</button><button id="pause">⏸ বিরতি</button><button id="restart">↺ শুরু থেকে</button><button id="slow">⏪ ধীরে</button><button id="fast">⏩ দ্রুত</button><span id="spd">গতি: 1×</span><input type="range" id="tl" min="0" max="1000" value="0" aria-label="সময়"></div></div>
-<section id="res"><div class="panel fold shut"><h2 id="rth" role="button" tabindex="0">অতিরিক্ত মান</h2><table id="rt"></table></div><div class="panel" id="qp" style="display:none"><h2>নির্দিষ্ট বিন্দুর মান</h2><table id="qt"></table></div><div class="panel"><h2>পথের কিছু মান (x, y)</h2><table id="pt"></table></div></section>
+<section id="res"><div class="panel" id="xp"><h2 class="tgl">অতিরিক্ত মান</h2><table id="rt"></table></div><div class="panel" id="qp" style="display:none"><h2>নির্দিষ্ট বিন্দুর মান</h2><table id="qt"></table></div><div class="panel"><h2>পথের কিছু মান (x, y)</h2><table id="pt"></table></div></section>
 </div>
+<footer>Y = মান দেব · N = লাগবে না · 🔒 = নির্ণয় করব (উত্তর লুকানো) — আবার চাপলে 👁 হয়ে শুধু সেই উত্তর দেখা যায়। 🔒 বক্সে ছাত্রছাত্রীর উত্তর লিখে মেলাও।</footer>
 </div></div>
 <script>
 const Q=[['v','নিক্ষেপণ বেগ','v₀','m/s'],['a','নিক্ষেপণ কোণ','θ₀','°'],['g','অভিকর্ষজ ত্বরণ','g','m/s²'],['H','সর্বোচ্চ উচ্চতা','H','m'],['R','অনুভূমিক পাল্লা','R','m'],['T','বিচরণকাল','T','s'],['h','নিক্ষেপ-উচ্চতা','h₀','m'],['pt','নির্দিষ্ট সময়','t','s'],['px','নির্দিষ্ট দূরত্ব','x','m'],['py','নির্দিষ্ট উচ্চতা','y','m']];
@@ -291,17 +303,8 @@ function sprite(t,size,col='#06305f',bg=null){const F='600 38px "Hind Siliguri",
 function line(p,col,dash,sc){const g=new THREE.BufferGeometry().setFromPoints(p.map(q=>new THREE.Vector3(...q)));const m=dash?new THREE.LineDashedMaterial({color:col,dashSize:sc*.02,gapSize:sc*.015}):new THREE.LineBasicMaterial({color:col});const l=new THREE.Line(g,m);if(dash)l.computeLineDistances();return l}
 function cv(w,h,fn){const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t}
 function textures(){if(TX.g)return;
- TX.g=cv(1024,1024,(x,w,h)=>{x.fillStyle='#4e9a38';x.fillRect(0,0,w,h);
-  // very soft, same-hue mottling (keeps the lawn one colour, just not flat/plastic)
-  for(let i=0;i<260;i++){const px=Math.random()*w,py=Math.random()*h,r=18+Math.random()*50,g=x.createRadialGradient(px,py,0,px,py,r),l=Math.random()<.5?'rgba(120,190,70,.07)':'rgba(25,80,20,.07)';g.addColorStop(0,l);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;
-   for(const ox of[-w,0,w])for(const oy of[-h,0,h]){x.save();x.translate(ox,oy);x.fillStyle=g;x.fillRect(px-r,py-r,2*r,2*r);x.restore()}}
-  // fine grass blades, wrapped so the tile is seamless
-  for(let i=0;i<42000;i++){const px=Math.random()*w,py=Math.random()*h,len=4+Math.random()*7,ang=-Math.PI/2+(Math.random()-.5)*.9,lt=34+Math.random()*22;
-   x.strokeStyle=`hsla(${92+Math.random()*14},${50+Math.random()*12}%,${lt}%,.55)`;x.lineWidth=.8+Math.random()*.9;
-   for(const ox of[-w,0,w])for(const oy of[-h,0,h]){if(px+ox<-20||px+ox>w+20||py+oy<-20||py+oy>h+20)continue;x.beginPath();x.moveTo(px+ox,py+oy);x.lineTo(px+ox+Math.cos(ang)*len,py+oy+Math.sin(ang)*len);x.stroke()}}
-  // tiny dark soil/shadow specks between blades
-  for(let i=0;i<9000;i++){x.fillStyle='rgba(20,55,15,.22)';x.fillRect(Math.random()*w,Math.random()*h,1.2,1.2)}});
- TX.g.wrapS=TX.g.wrapT=THREE.RepeatWrapping;TX.g.anisotropy=16;
+ TX.g=cv(512,256,(x,w,h)=>{x.fillStyle='#5aa843';x.fillRect(0,0,w/2,h);x.fillStyle='#4a963a';x.fillRect(w/2,0,w/2,h);for(let i=0;i<9000;i++){x.fillStyle=`hsla(${85+Math.random()*35},55%,${26+Math.random()*24}%,.45)`;x.fillRect(Math.random()*w,Math.random()*h,1.5,3)}});
+ TX.g.wrapS=TX.g.wrapT=THREE.RepeatWrapping;TX.g.anisotropy=8;
  TX.b=cv(256,128,(x,w,h)=>{x.fillStyle='#fff';x.fillRect(0,0,w,h);x.fillStyle='#222';for(let i=0;i<7;i++){const cx=(i+.5)*w/7,cy=i%2?h*.3:h*.7;x.beginPath();for(let j=0;j<5;j++){const t=j*1.2566+.3;x.lineTo(cx+Math.cos(t)*14,cy+Math.sin(t)*14)}x.fill()}});
  TX.c=cv(256,128,(x,w,h)=>{const r=x.createRadialGradient(128,64,5,128,64,100);r.addColorStop(0,'rgba(255,255,255,.95)');r.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=r;x.fillRect(0,0,w,h)})}
 function initGL(){const el=$('view');scene=new THREE.Scene();cam=new THREE.PerspectiveCamera(42,1,.1,1e6);
@@ -324,14 +327,14 @@ function draw(){evalMatch();render();panels();hud();const ph=$('ph');sp();fit();
  sk.setAttribute('color',new THREE.Float32BufferAttribute(cs,3));const sm=new THREE.Mesh(sk,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide,fog:false}));sm.position.set(Lx/2,0,0);add(sm);
  for(let i=0;i<10;i++){const c=new THREE.Sprite(new THREE.SpriteMaterial({map:TX.c,transparent:true,fog:false,depthWrite:false}));const w=sc*(2+rnd()*3);c.scale.set(w,w*.35,1);c.position.set(Lx/2+(rnd()-.5)*sc*30,sc*(3+rnd()*5),-sc*(6+rnd()*14));add(c)}
  // ground
- const G=sc*80,gt=TX.g;gt.repeat.set(G/(step*.9),G/(step*.9));gt.offset.set(0,0);
- const gm=new THREE.Mesh(new THREE.PlaneGeometry(G,G),new THREE.MeshStandardMaterial({map:gt,bumpMap:gt,bumpScale:.6,roughness:1,metalness:0}));gm.rotation.x=-Math.PI/2;gm.position.set(Lx/2,0,0);gm.receiveShadow=true;add(gm);
+ const G=sc*80,gt=TX.g;gt.repeat.set(G/(2*step),G/step);gt.offset.x=(Lx/2-G/2)/(2*step);
+ const gm=new THREE.Mesh(new THREE.PlaneGeometry(G,G),new THREE.MeshStandardMaterial({map:gt,roughness:1}));gm.rotation.x=-Math.PI/2;gm.position.set(Lx/2,0,0);gm.receiveShadow=true;add(gm);
  const gr=new THREE.GridHelper(Lx,Math.round(Lx/step),0xffffff,0xffffff);gr.material.transparent=true;gr.material.opacity=.3;gr.scale.z=.6;gr.position.set(Lx/2,sc*.0008,0);add(gr);
  // scenery
-  for(let i=0;i<24;i++){const an=Math.PI*2*i/24+rnd()*.2,hh=sc*(2+rnd()*3),r0=sc*(24+rnd()*8),m=new THREE.Mesh(new THREE.ConeGeometry(hh*.9,hh,6),new THREE.MeshLambertMaterial({color:new THREE.Color(0x6a86a3).lerp(new THREE.Color(0x8aa0b5),rnd())}));m.position.set(Lx/2+Math.cos(an)*r0,hh/2,Math.sin(an)*r0);add(m)}
+ for(let i=0;i<24;i++){const an=Math.PI*2*i/24+rnd()*.2,hh=sc*(2+rnd()*3),r0=sc*(24+rnd()*8),m=new THREE.Mesh(new THREE.ConeGeometry(hh*.9,hh,6),new THREE.MeshLambertMaterial({color:new THREE.Color(0x6a86a3).lerp(new THREE.Color(0x8aa0b5),rnd())}));m.position.set(Lx/2+Math.cos(an)*r0,hh/2,Math.sin(an)*r0);add(m)}
  // axes & ticks
  add(line([[0,0,0],[Lx*1.05,0,0]],0xffffff),line([[0,0,0],[0,Hy*1.05,0]],0x06305f),line([[0,0,0],[0,0,Lx*.3]],0xdddddd));
- const lab=(t,sz,p,c='#fff',b='#06305fb8')=>{const s=sprite(t,sz,c,b);s.position.set(...p);add(s)};
+ const lab=(t,sz,p,c='#fff',b='#06305fb8')=>{const s=sprite(t,sz*1.2,c,b);s.position.set(...p);add(s)};
  lab('x (m)',sc*.16,[Lx*1.1,0,0]);lab('y (m)',sc*.16,[0,Hy*1.1,0]);lab('z',sc*.08,[0,0,Lx*.33]);
  for(let i=0;i*step<=Lx+1e-9;i++)lab(tk(i*step),sc*.1,[i*step,-sc*.04,sc*.03]);
  for(let j=1;j*step<=Hy+1e-9;j++)lab(tk(j*step),sc*.1,[-sc*.05,j*step,0]);
@@ -347,7 +350,7 @@ function draw(){evalMatch();render();panels();hud();const ph=$('ph');sp();fit();
  const bs=new THREE.Mesh(new THREE.CylinderGeometry(sc*.025,sc*.03,sc*.012,20),new THREE.MeshStandardMaterial({color:0x555e6b}));bs.position.set(0,h+sc*.006,0);bs.castShadow=true;add(bar,bs);
  // markers
  const ar=[];for(let i=0;i<=30;i++){const q=rad(a)*i/30;ar.push([sc*.1*Math.cos(q),h+sc*.1*Math.sin(q),0])}add(line(ar,0xffd23f));
- lab('θ₀ = '+(shw('a')?f(a)+'°':'?'),sc*.25,[sc*.2,h+sc*.035,0],'#ffe680');lab('v₀ = '+(shw('v')?f(v)+' m/s':'?'),sc*.3,[vx/v*sc*.3+sc*.12,h+vy/v*sc*.3+sc*.05,0]);
+ lab('θ₀ = '+(shw('a')?f(a)+'°':'?'),sc*.25,[sc*.2,h+sc*.035,0],'#ffe680');lab('v₀ = '+(shw('v')?f(v)+' m/s':'?'),sc*.3,[-sc*.2,h+sc*.15,0]);
  if(!X.H){const xa=vx*vy/g;add(line([[xa,0,0],[xa,H,0]],0xffffff,true,sc));const ap=new THREE.Mesh(new THREE.SphereGeometry(sc*.014,12,12),new THREE.MeshBasicMaterial({color:0xff2d2d}));ap.position.set(xa,H,0);add(ap);lab('H_max = '+(shw('H')?f(H)+' m':'?'),sc*.27,[xa,H+sc*.06,0])}
  if(!X.R){const ry=sc*.002,rz=sc*.09;add(line([[0,ry,rz],[R,ry,rz]],0xffffff),line([[0,ry,rz*.6],[0,ry,rz*1.4]],0xffffff),line([[R,ry,rz*.6],[R,ry,rz*1.4]],0xffffff));lab('R = '+(shw('R')?f(R)+' m':'?'),sc*.27,[R/2,sc*.03,rz]);
   const ring=new THREE.Mesh(new THREE.RingGeometry(sc*.02,sc*.03,32),new THREE.MeshBasicMaterial({color:0xff4d4d,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(R,sc*.003,0);add(ring)}
@@ -371,17 +374,18 @@ $('solve').onclick=()=>{tt=0;solve()};$('show').onclick=()=>{solve();if(P){tt=0;
 $('rst').onclick=()=>{resetAll();say('','');YF.v=false;draw()};
 $('res').addEventListener('input',e=>{const t=e.target;if(t.classList&&t.classList.contains('ans')){ANS[t.dataset.k]=t.value;check()}});
 $('clap').onclick=hideClap;
+$('xp').querySelector('h2').onclick=()=>$('xp').classList.toggle('open');
 $('res').addEventListener('click',e=>{const t=e.target;if(t.classList&&t.classList.contains('eyeb')){REV[t.dataset.k]=!REV[t.dataset.k];draw()}});
 $('play').onclick=()=>{if(P){if(tt>=P.T)tt=0;playing=true}};$('pause').onclick=()=>playing=false;$('restart').onclick=()=>{tt=0;playing=!!P;upd()};
 $('fast').onclick=()=>{spd=Math.min(8,spd*2);sp()};$('slow').onclick=()=>{spd=Math.max(.125,spd/2);sp()};
 $('tl').oninput=e=>{if(!P)return;playing=false;tt=P.T*e.target.value/1000;upd()};
 const tab=s=>{side=s;$('b3').classList.toggle('on',!s);$('bs').classList.toggle('on',s);setCam()};$('b3').onclick=()=>tab(false);$('bs').onclick=()=>tab(true);$('bc').onclick=()=>setCam();
 $('fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()};
-function fit(){const W=innerWidth,H=innerHeight,p=W<H*.85||W<720,st=$('stage');st.classList.toggle('p',p);let k,lw,lh;
+let DESK=false;try{DESK=localStorage.getItem('deskMode')==='1'}catch(e){}
+function fit(){const W=innerWidth,H=innerHeight,p=!DESK&&(W<H*.85||W<720),st=$('stage');$('dk').textContent=DESK?'📱 মোবাইল মোড':'🖥 ডেক্সটপ মোড';st.classList.toggle('p',p);let k,lw,lh;
  if(p){lw=620;k=W/lw;st.style.width=lw+'px';st.style.height='auto';lh=st.offsetHeight;document.body.style.overflowY='auto'}
- else{k=Math.min(W/1920,H/1080);lw=W/k;lh=H/k;st.style.width=lw+'px';st.style.height=lh+'px';document.body.style.overflowY='hidden'}
- curK=k;st.style.transform='scale('+k+')';$('wrap').style.width=W+'px';$('wrap').style.height=lh*k+'px'}
+ else{const bw=DESK?1280:1440,bh=DESK?720:810;k=Math.min(W/bw,H/bh);lw=W/k;lh=DESK?Math.min(H/k,lw*.62):H/k;st.style.width=lw+'px';st.style.height=lh+'px';document.body.style.overflowY='hidden'}
+ curK=k;st.style.transform='scale('+k+')';$('wrap').style.width=W+'px';$('wrap').style.height=lh*k+'px';$('wrap').style.marginTop=(!p&&DESK&&lh*k<H)?(H-lh*k)/2+'px':'0'}
+$('dk').onclick=()=>{DESK=!DESK;try{localStorage.setItem('deskMode',DESK?'1':'0')}catch(e){}fit();draw()};
 addEventListener('resize',fit);build();resetAll();S.v={m:'k',x:20};IN.v.value='20';S.a={m:'k',x:45};IN.a.value='45';YF.v=true;YF.a=true;fit();if(ready)initGL();solve();
-
-(function(){const h=document.getElementById('rth');if(!h)return;const t=()=>h.parentNode.classList.toggle('shut');h.addEventListener('click',t);h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}})})();
 </script></body></html>
