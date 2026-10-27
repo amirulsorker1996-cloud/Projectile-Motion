@@ -108,13 +108,89 @@ footer{height:34px;flex:none;background:var(--navy);color:#fff;display:flex;alig
 .credit{margin-left:22px;text-align:right;font-size:12px;line-height:1.3;opacity:.95;white-space:nowrap}
 .credit b{display:block;font-size:19px;font-weight:700;line-height:1.25;opacity:1}
 .p .credit{grid-area:c;margin:0;text-align:right;font-size:11px}.p .credit b{font-size:15px}
+
+/* প্রজেক্টর/বড় পর্দার জন্য বড় ইনপুট বক্স (শুধু ডেস্কটপ বিন্যাসে) */
+#stage:not(.p) #main{grid-template-columns:800px minmax(0,1fr);gap:12px 16px}
+#stage:not(.p) #top{gap:7px}
+#stage:not(.p) .card{grid-template-columns:minmax(0,1fr) 46px;grid-template-rows:auto 58px 40px;border-width:2px;border-radius:9px}
+#stage:not(.p) .card .top{font-size:19px;font-weight:700;padding:3px 6px}
+#stage:not(.p) .card input{font-size:34px;padding:0 10px}
+#stage:not(.p) .card .un select{font-size:20px;padding:0 26px 0 10px}
+#stage:not(.p) .card .un i{font-size:16px;right:8px}
+#stage:not(.p) .yn button{font-size:21px;font-weight:700}
+#stage:not(.p) .yn button:nth-child(3){font-size:18px}
+#stage:not(.p) #show{height:52px;font-size:24px}
+#stage:not(.p) #solve{height:52px;font-size:21px}
+#stage:not(.p) #bt{gap:10px;margin-top:8px}
+#stage:not(.p) #msg{font-size:20px}
+#stage:not(.p) .panel h2{font-size:26px}
+#stage:not(.p) td,#stage:not(.p) th{font-size:22px;padding:5px 4px}
+#stage:not(.p) .ans{font-size:22px}
+#stage:not(.p) td:nth-child(3){width:80px}
+#stage:not(.p) .eyeb{font-size:20px}
+#stage:not(.p) .tools button{font-size:20px;padding:7px 16px}
+#stage:not(.p) #vbar button,#stage:not(.p) .ctl button{font-size:20px;padding:8px 16px}
+#stage:not(.p) #hud,#stage:not(.p) .ctl span{font-size:20px}
+
+/* উপরে ইনপুট, নিচে সিমুলেশন (ডেস্কটপ/প্রজেক্টর বিন্যাস) */
+#stage:not(.p) #main{grid-template-columns:minmax(0,1fr) 520px;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"inp inp" "view res";gap:12px 14px;padding:10px 16px}
+#stage:not(.p) #inp{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:6px 14px;align-items:start}
+#stage:not(.p) #top{grid-column:1;grid-template-columns:repeat(10,minmax(0,1fr));gap:7px}
+#stage:not(.p) #top .card{grid-column:span 2!important}
+#stage:not(.p) #bt{grid-column:2;flex-direction:column;margin-top:0;gap:8px}
+#stage:not(.p) #show{height:66px;font-size:26px}
+#stage:not(.p) #solve{height:66px;font-size:23px}
+#stage:not(.p) #msg{grid-column:1/3;margin-top:0}
+#stage:not(.p) .card{grid-template-rows:auto 54px 38px}
+#stage:not(.p) .card input{font-size:32px}
+
+/* উপরে সিমুলেশন (অর্ধেক), নিচে মান দেওয়া (অর্ধেক) */
+#stage:not(.p) #main{grid-template-columns:minmax(0,1fr) 520px;grid-template-rows:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"view view" "inp res";gap:10px 14px;padding:10px 16px}
+#stage:not(.p) #inp{overflow-y:auto;min-height:0}
+#stage:not(.p) #msg{font-size:18px}
+
+/* নিচের অর্ধেক: ১০টি বড় বক্স, তার নিচে চালাও বাটন ও অতিরিক্ত মান */
+#bot{display:contents}
+#stage:not(.p) #main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"view" "bot";gap:10px;padding:10px 16px}
+#stage:not(.p) #bot{grid-area:bot;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0;padding-right:2px}
+#stage:not(.p) #inp{display:block;overflow:visible;flex:none}
+#stage:not(.p) #res{grid-area:auto;overflow:visible;flex:none;display:flex;flex-direction:column;gap:8px;padding:0}
+#stage:not(.p) #top{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#stage:not(.p) #top .card{grid-column:auto!important}
+#stage:not(.p) .card{grid-template-columns:minmax(0,1fr) 64px;grid-template-rows:auto 66px 44px;border-width:2px}
+#stage:not(.p) .card .top{font-size:23px;padding:3px 8px}
+#stage:not(.p) .card input{font-size:42px;padding:0 14px}
+#stage:not(.p) .card .un select{font-size:23px;padding:0 30px 0 12px}
+#stage:not(.p) .card .un i{font-size:18px;right:10px}
+#stage:not(.p) .yn button{font-size:25px}
+#stage:not(.p) .yn button:nth-child(3){font-size:22px}
+#stage:not(.p) #bt{display:block;margin-top:8px}
+#stage:not(.p) #show{display:block;width:100%;height:68px;font-size:30px}
+#stage:not(.p) #msg{font-size:20px;margin-top:6px}
+
+/* উত্তর প্রদর্শন প্যানেল (সিমুলেশনের পাশে) */
+#vrow{flex:1;min-height:0;display:flex}
+#vrow #view{flex:1;min-width:0}
+#side{display:none;flex:none;width:520px;position:relative;overflow:hidden;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:12px 16px;background:linear-gradient(160deg,#06305f 0%,#0a63d6 100%);border-left:3px solid #ffd23f}
+#side.on{display:flex}
+#side .sx{position:absolute;right:8px;top:6px;z-index:3;border:0;background:#ffffff33;color:#fff;border-radius:8px;font:inherit;font-size:20px;width:36px;height:36px;cursor:pointer}
+#side .em{font-size:64px;line-height:1.1;position:relative;z-index:2}
+#side.cele .em{animation:clp .45s ease-in-out infinite alternate}
+#side .nm{font-size:30px;font-weight:700;line-height:1.3;position:relative;z-index:2}
+#side .vl{font-weight:700;line-height:1.05;color:#ffe680;margin:2px 0;position:relative;z-index:2;word-break:break-word;text-shadow:0 3px 10px #0006}
+#side .un{font-size:44px;font-weight:600;position:relative;z-index:2}
+#side .ok{font-size:30px;font-weight:700;margin-top:8px;position:relative;z-index:2;background:#ffffff26;border-radius:12px;padding:4px 16px}
+#side .cf{position:absolute;top:-24px;width:10px;height:16px;border-radius:2px;opacity:.95;pointer-events:none;z-index:1;animation:cfall linear forwards}
+@keyframes cfall{to{transform:translateY(620px) rotate(900deg)}}
+.p #vrow{flex-direction:column}
+.p #side{width:auto;flex:none;border-left:0;border-top:3px solid #ffd23f;padding:12px 10px 14px}
+.p #side .em{font-size:48px}.p #side .nm{font-size:22px}.p #side .un{font-size:30px}.p #side .ok{font-size:22px}
 </style></head><body><div id="wrap"><div id="stage">
-<header><h1>প্রাসের গতি — ইন্টারঅ্যাকটিভ সিমুলেশন</h1><div class="tools"><button id="fs">⛶ পূর্ণ পর্দা</button><button id="rst">↺ নতুন সমস্যা</button></div><div class="credit"><b>মোঃ আমিরুল ইসলাম</b>প্রভাষক (পদার্থবিজ্ঞান)<br>হাজী জসীম উদ্দীন ডিগ্রী কলেজ<br>দুবলিয়া, পাবনা সদর, পাবনা।</div></header>
+<header><h1>প্রাসের গতি — ইন্টারঅ্যাকটিভ সিমুলেশন</h1><div class="tools"><button id="fs">⛶ পূর্ণ পর্দা</button><button id="dm">🖥 ডেস্কটপ মোড</button><button id="rst">↺ নতুন সমস্যা</button></div><div class="credit"><b>মোঃ আমিরুল ইসলাম</b>প্রভাষক (পদার্থবিজ্ঞান)<br>হাজী জসীম উদ্দীন ডিগ্রী কলেজ<br>দুবলিয়া, পাবনা সদর, পাবনা।</div></header>
 <div id="main">
-<section id="inp"><div id="top"></div><div id="bt"><button class="btn" id="show">▶ সিমুলেশন চালাও</button><button class="btn" id="solve">সমীকরণ থেকে মান নির্ণয়</button></div><div id="msg"></div></section>
-<div class="stage"><div id="view"><div id="vbar"><button id="b3" class="on">3D দৃশ্যপট</button><button id="bs">পাশের দৃশ্য</button><button id="bc">ক্যামেরা রিসেট</button></div><div id="hud"></div><div id="clap"><div class="em">👏</div><div class="tx">সাবাশ! উত্তর মিলে গেছে</div><div class="sb">সবাই হাততালি দাও!</div></div><div id="ph"></div></div>
+<div class="stage"><div id="vrow"><div id="view"><div id="vbar"><button id="b3" class="on">3D দৃশ্যপট</button><button id="bs">পাশের দৃশ্য</button><button id="bc">ক্যামেরা রিসেট</button><button id="bsd" class="on">👏 হাততালি</button><button id="bh">⏱ সময় দেখাও</button></div><div id="hud"></div><div id="ph"></div></div><div id="side"></div></div>
 <div class="ctl"><button id="play">▶ চালাও</button><button id="pause">⏸ বিরতি</button><button id="restart">↺ শুরু থেকে</button><button id="slow">⏪ ধীরে</button><button id="fast">⏩ দ্রুত</button><span id="spd">গতি: 1×</span><input type="range" id="tl" min="0" max="1000" value="0" aria-label="সময়"></div></div>
-<section id="res"><div class="panel fold shut"><h2 id="rth" role="button" tabindex="0">অতিরিক্ত মান</h2><table id="rt"></table></div><div class="panel" id="qp" style="display:none"><h2>নির্দিষ্ট বিন্দুর মান</h2><table id="qt"></table></div><div class="panel"><h2>পথের কিছু মান (x, y)</h2><table id="pt"></table></div></section>
+<div id="bot"><section id="inp"><div id="top"></div><div id="bt"><button class="btn" id="show">▶ সিমুলেশন চালাও</button></div><div id="msg"></div></section><section id="res"><div class="panel fold shut"><h2 id="rth" role="button" tabindex="0">অতিরিক্ত মান</h2><table id="rt"></table></div><div class="panel" id="qp" style="display:none"><h2>নির্দিষ্ট বিন্দুর মান</h2><table id="qt"></table></div><div class="panel"><h2>পথের কিছু মান (x, y)</h2><table id="pt"></table></div></section></div>
 </div>
 </div></div>
 <script>
@@ -200,7 +276,7 @@ function solve(pick){
 function say(cls,t){const m=$('msg');m.innerHTML='';if(choices){const d=document.createElement('div');d.className='info';d.innerHTML='<b>একাধিক সমাধান আছে।</b> একটি বেছে নাও:';choices.forEach(([v,a],i)=>{const b=document.createElement('button');b.className='btn';b.textContent=HIDE?'সমাধান '+(i+1):'θ₀ = '+f(a)+'°, v₀ = '+f(v)+' m/s';b.onclick=()=>solve(i);d.appendChild(b)});m.appendChild(d)}else if(t){const d=document.createElement('div');d.className=cls;d.textContent=t;m.appendChild(d)}}
 /* ---------- cards ---------- */
 const DEF={},DV={g:9.8,h:0};
-function togg(k){if(!HIDE){HIDE=true;REV={};if(choices)say('','')}else REV[k]=!REV[k];draw()}
+function togg(k){if(!HIDE){HIDE=true;REV={};if(choices)say('','')}else REV[k]=!REV[k];draw();if(HIDE&&REV[k])showAns(k,'reveal')}
 function build(){const top=$('top');for(const[k,n,sy]of Q){const d=document.createElement('div');d.className='card u';
  const un='<div class="un"><select aria-label="একক">'+UN[k].map(u=>`<option value="${u[1]}">${u[0]}</option>`).join('')+'</select><i>▽</i></div>';
  d.innerHTML=`<div class="top">${n}, ${sy}<b></b></div><input inputmode="decimal" autocomplete="off" placeholder="?" aria-label="${n}">${un}<div class="yn"><button title="মান দেব">Y</button><button title="লাগবে না">N</button><button title="নির্ণয় করব (উত্তর লুকানো থাকবে)">🔒</button></div>`;
@@ -237,13 +313,51 @@ function evalMatch(){MATCH={};let typed=0,allOk=true;
  for(const[k]of Q)if(AM(k))test(k,S[k].m==='c'?truthOf(k):null,uf[k]);
  for(const e of buildExtras())test(e.key,e.val,1);
  return typed>0&&allOk}
-function check(){const prev=JSON.stringify(MATCH),ok=evalMatch();if(prev!==JSON.stringify(MATCH))draw();else render();if(ok&&!lastOk)celebrate();if(!ok)hideClap();lastOk=ok}
-let clapT=null;
-function hideClap(){const c=$('clap');if(c)c.classList.remove('on');clearTimeout(clapT)}
-function celebrate(){const c=$('clap');c.classList.add('on');clearTimeout(clapT);clapT=setTimeout(hideClap,7000);applause()}
-function applause(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const c=new AC(),sr=c.sampleRate,len=Math.floor(sr*2.2),b=c.createBuffer(1,len,sr),d=b.getChannelData(0);
- for(let n=0;n<90;n++){const st=Math.floor(Math.random()*sr*1.9),dur=Math.floor(sr*.03);for(let j=0;j<dur&&st+j<len;j++)d[st+j]+=(Math.random()*2-1)*Math.exp(-j/(dur*.25))*.5}
- const src=c.createBufferSource(),gn=c.createGain();gn.gain.value=.8;src.buffer=b;src.connect(gn);gn.connect(c.destination);src.start()}catch(e){}}
+function check(){const prev=JSON.stringify(MATCH),ok=evalMatch();if(prev!==JSON.stringify(MATCH))draw();else render();celebrateNew();lastOk=ok}
+let clapT=null,CEL={},SIDEK=null,SIDEM=null,SIDEV=null;
+function hideSide(){clearTimeout(clapT);const sd=$('side');if(sd){sd.className='';sd.innerHTML=''}SIDEK=null;SIDEM=null;SIDEV=null}
+function hideClap(){hideSide();CEL={}}
+function unitOf(k){const u=(UN[k]||[]).find(x=>Math.abs(x[1]-uf[k])<1e-9);return u?u[0]:((Q.find(q=>q[0]===k)||[])[3]||'')}
+function ansInfo(k){if(!P)return null;const q=Q.find(x=>x[0]===k);
+ if(q){const ok=(PK[k]&&Qp.length===2)||isFinite(+S[k].x);if(!ok)return null;return{n:q[1],s:q[2],val:showVal(k),u:unitOf(k)}}
+ const e=buildExtras().find(x=>x.key===k);return e?{n:e.n,s:e.s,val:f(e.val)+(e.sfx||''),u:e.u}:null}
+function sideSync(){if(!SIDEK)return;const I=ansInfo(SIDEK);
+ if(!I||I.val!==SIDEV||(SIDEM==='reveal'&&!REV[SIDEK])||(SIDEM==='match'&&MATCH[SIDEK]!==true))hideSide()}
+function showAns(k,mode){const I=ansInfo(k);if(!I)return;const sd=$('side');if(!sd)return;
+ SIDEK=k;SIDEM=mode;SIDEV=I.val;const L=String(I.val).length,fs=L<=5?130:L<=7?112:L<=9?92:L<=13?68:52;
+ let cf='';const col=['#ff4d6d','#ffd23f','#2ecc71','#4cc9f0','#ffffff','#ff9f1c','#b388ff'];
+ for(let n=0;n<40;n++)cf+=`<i class="cf" style="left:${Math.random()*100}%;background:${col[n%col.length]};animation-duration:${2.4+Math.random()*2.4}s;animation-delay:${Math.random()*1.6}s"></i>`;
+ sd.className='on cele';
+ sd.innerHTML=`${cf}<button class="sx" onclick="hideSide()" title="বন্ধ করো">✕</button><div class="em">${mode==='match'?'👏':'🎉'}</div><div class="nm">${I.n}${I.s?' ('+I.s+')':''}</div><div class="vl" style="font-size:${fs}px">${I.val}</div><div class="un">${I.u}</div><div class="ok">${mode==='match'?'সাবাশ! উত্তর মিলে গেছে':'এই হলো সঠিক উত্তর'}</div>`;
+ clearTimeout(clapT);clapT=setTimeout(()=>{sd.classList.remove('cele');sd.querySelectorAll('.cf').forEach(e=>e.remove())},7000);cheer(mode)}
+function celebrateNew(){for(const k in MATCH){if(MATCH[k]===true){if(!CEL[k]){CEL[k]=1;showAns(k,'match')}}else delete CEL[k]}}
+let SNDM='clap',AC0=null,BNV=null;
+function pickVoice(){try{const v=speechSynthesis.getVoices();BNV=v.find(x=>/^bn/i.test(x.lang))||null;return v.length}catch(e){return 0}}
+try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice)}catch(e){}
+const PH_OK=['সাবাশ! উত্তর মিলে গেছে।','অসাধারণ! একদম সঠিক উত্তর।','চমৎকার! খুব ভালো হয়েছে।','সাবাশ! সবাই হাততালি দাও।'];
+function speakBn(text,fb){try{if(!('speechSynthesis' in window))return fb();const n=pickVoice();if(n>0&&!BNV)return fb();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=BNV?BNV.lang:'bn-BD';if(BNV)u.voice=BNV;u.rate=.9;u.pitch=1.05;u.volume=1;u.onerror=()=>fb();speechSynthesis.speak(u)}catch(e){fb()}}
+
+/* ---- খেলার শব্দ: কিক ও মাটিতে পড়া ---- */
+function actx(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!AC0)AC0=new AC();if(AC0.state==='suspended')AC0.resume();return AC0}catch(e){return null}}
+addEventListener('pointerdown',actx,{passive:true});addEventListener('keydown',actx);
+function thump(c,t,f0,f1,dur,vol){const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur*.8);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.02)}
+function puff(c,t,dur,type,fr,vol){const n=Math.floor(c.sampleRate*dur),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(n*.22));const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type=type;f.frequency.value=fr;g.gain.value=vol;s.connect(f);f.connect(g);g.connect(c.destination);s.start(t)}
+function kickSnd(){if(SNDM==='off')return;const c=actx();if(!c)return;const t=c.currentTime+.01;thump(c,t,230,55,.22,1);puff(c,t,.05,'bandpass',1100,.7);puff(c,t,.12,'lowpass',500,.5)}
+function landSnd(){if(SNDM==='off')return;const c=actx();if(!c)return;const t=c.currentTime+.01;thump(c,t,130,38,.3,.95);puff(c,t,.14,'lowpass',420,.8);puff(c,t,.04,'bandpass',900,.3);thump(c,t+.2,95,38,.2,.35);puff(c,t+.2,.08,'lowpass',380,.3)}
+function cheer(mode){if(SNDM==='off')return;if(SNDM==='clap')return applause();speakBn(mode==='match'?PH_OK[Math.floor(Math.random()*PH_OK.length)]:'এই হলো সঠিক উত্তর।',applause)}
+function applause(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!AC0)AC0=new AC();const c=AC0;if(c.state==='suspended')c.resume();
+ const sr=c.sampleRate,secs=4.2,len=Math.floor(sr*secs),b=c.createBuffer(2,len,sr);
+ // দর্শকের হাততালি: অনেকগুলো ছোট ছোট "চটাস" — শুরুতে বাড়ে, মাঝে জোরালো, শেষে ধীরে মিলিয়ে যায়
+ const env=t=>t<.5?t/.5:t<2.6?1:Math.max(0,1-(t-2.6)/1.6);
+ for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);
+  for(let n=0;n<420;n++){let t=Math.random()*secs;if(Math.random()>env(t)*.95+.03)continue;
+   const st=Math.floor(t*sr),dur=Math.floor(sr*(.012+Math.random()*.028)),amp=.25+Math.random()*.75,k=.12+Math.random()*.2;
+   let lp=0;for(let j=0;j<dur&&st+j<len;j++){const w=(Math.random()*2-1),y=w-lp;lp+=.35*y;d[st+j]+=y*Math.exp(-j/(dur*k))*amp*.35}}
+  // হালকা ভিড়ের গুঞ্জন
+  let z=0;for(let j=0;j<len;j++){z+=(Math.random()*2-1-z)*.08;d[j]+=z*.05*env(j/sr)}}
+ const src=c.createBufferSource(),hp=c.createBiquadFilter(),pk=c.createBiquadFilter(),lp=c.createBiquadFilter(),gn=c.createGain();
+ src.buffer=b;hp.type='highpass';hp.frequency.value=500;pk.type='peaking';pk.frequency.value=2200;pk.Q.value=.8;pk.gain.value=5;lp.type='lowpass';lp.frequency.value=7000;
+ gn.gain.value=1.1;src.connect(hp);hp.connect(pk);pk.connect(lp);lp.connect(gn);gn.connect(c.destination);src.start()}catch(e){}}
 function edit(k){const i=IN[k];
  if(AM(k)){ANS[k]=i.value.trim();check();return}
  const raw=i.value.trim().replace(',','.');clearAns();i.classList.remove('bad');
@@ -280,8 +394,19 @@ function panels(){const ae=document.activeElement,ak=ae&&ae.classList&&ae.classL
  if(!P){pt.innerHTML='<tr><td class="u">গতিপথ নির্ণয়ের অপেক্ষায়…</td></tr>'}
  else{let h='<tr><th>সময় (s)</th><th>x (m)</th><th>y (m)</th></tr>';for(let i=0;i<=4;i++){const t=P.T*i/4;h+=`<tr><td>${f(t)}</td><td>${f(P.vx*t)}</td><td>${f(Math.max(0,P.h+P.vy*t-.5*P.g*t*t))}</td></tr>`}pt.innerHTML=h}
  if(ak){const n=document.querySelector('.ans[data-k="'+ak+'"]');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}}
-function hud(){if(!P){$('hud').innerHTML='';return}if(HIDE){$('hud').innerHTML=`t = ${f(tt)} s`;return}const vy=P.vy-P.g*tt;$('hud').innerHTML=`t = ${f(tt)} s<br>x = ${f(P.vx*tt)} m &nbsp; y = ${f(Math.max(0,P.h+P.vy*tt-.5*P.g*tt*tt))} m<br>vₓ = ${f(P.vx)} &nbsp; vᵧ = ${f(vy)}<br>v = ${f(Math.hypot(P.vx,vy))} m/s`}
+let HUDON=false;
+function hud(){if(!HUDON||!P){$('hud').innerHTML='';return}if(HIDE){$('hud').innerHTML=`t = ${f(tt)} s`;return}const vy=P.vy-P.g*tt;$('hud').innerHTML=`t = ${f(tt)} s<br>x = ${f(P.vx*tt)} m &nbsp; y = ${f(Math.max(0,P.h+P.vy*tt-.5*P.g*tt*tt))} m<br>vₓ = ${f(P.vx)} &nbsp; vᵧ = ${f(vy)}<br>v = ${f(Math.hypot(P.vx,vy))} m/s`}
 /* ---------- 3D ---------- */
+const KL=[];
+function declutter(){if(!KL.length||!cam||!rend)return;const el=rend.domElement,W=el.clientWidth,Hh=el.clientHeight;if(!W||!Hh)return;
+ cam.updateMatrixWorld();const right=new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,1),fw=new THREE.Vector3();cam.getWorldDirection(fw);const tn=Math.tan(cam.fov*Math.PI/360);
+ const it=KL.map(o=>{const dist=Math.max(o.a.clone().sub(cam.position).dot(fw),1e-6),pw=2*tn*dist/Hh,pr=o.a.clone().project(cam);return{o,pw,x:(pr.x+1)/2*W,y:(1-pr.y)/2*Hh,w:o.s.scale.x/pw+6,h:o.s.scale.y/pw+6,dx:0,dy:0}});
+ for(let pass=0;pass<12;pass++){let moved=false;
+  for(let i=0;i<it.length;i++)for(let j=i+1;j<it.length;j++){const A=it[i],B=it[j],ax=A.x+A.dx,ay=A.y+A.dy,bx=B.x+B.dx,by=B.y+B.dy,ox=(A.w+B.w)/2-Math.abs(ax-bx),oy=(A.h+B.h)/2-Math.abs(ay-by);
+   if(ox>0&&oy>0){moved=true;if(oy<=ox){const d=(by>=ay?1:-1)*oy/2;A.dy-=d;B.dy+=d}else{const d=(bx>=ax?1:-1)*ox/2;A.dx-=d;B.dx+=d}}}
+  it.forEach(t=>{t.dx=Math.min(Math.max(t.x+t.dx,t.w/2),W-t.w/2)-t.x;t.dy=Math.min(Math.max(t.y+t.dy,t.h/2),Hh-t.h/2)-t.y});
+  if(!moved)break}
+ it.forEach(t=>{t.o.s.position.copy(t.o.a).addScaledVector(right,t.dx*t.pw).addScaledVector(up,-t.dy*t.pw)})}
 let scene,cam,rend,ctl,grp,ball,va,sun,ready=typeof THREE!=='undefined'&&THREE.OrbitControls,D={},TX={};
 function nice(r){const m=Math.pow(10,Math.floor(Math.log10(r)));for(const k of[1,2,5,10])if(k*m>=r)return k*m}
 function sprite(t,size,col='#06305f',bg=null){const F='600 38px "Hind Siliguri","Noto Sans Bengali",sans-serif',mc=document.createElement('canvas').getContext('2d');mc.font=F;const w=Math.max(64,Math.ceil(mc.measureText(t).width)+36);
@@ -305,15 +430,15 @@ function textures(){if(TX.g)return;
  TX.c=cv(256,128,(x,w,h)=>{const r=x.createRadialGradient(128,64,5,128,64,100);r.addColorStop(0,'rgba(255,255,255,.95)');r.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=r;x.fillRect(0,0,w,h)})}
 function initGL(){const el=$('view');scene=new THREE.Scene();cam=new THREE.PerspectiveCamera(42,1,.1,1e6);
  rend=new THREE.WebGLRenderer({antialias:true});rend.setClearColor(0xcfe5f5);rend.outputEncoding=THREE.sRGBEncoding;rend.shadowMap.enabled=true;rend.shadowMap.type=THREE.PCFSoftShadowMap;
- el.insertBefore(rend.domElement,el.firstChild);ctl=new THREE.OrbitControls(cam,rend.domElement);ctl.enableDamping=true;ctl.maxPolarAngle=Math.PI/2-.02;
+ el.insertBefore(rend.domElement,el.firstChild);ctl=new THREE.OrbitControls(cam,rend.domElement);ctl.enableDamping=true;rend.domElement.style.touchAction='none';rend.domElement.style.cursor='grab';ctl.screenSpacePanning=true;ctl.maxPolarAngle=Math.PI/2-.02;
  scene.add(new THREE.HemisphereLight(0xcfe8ff,0x4a7a3a,.85));sun=new THREE.DirectionalLight(0xfff2d8,.9);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun,sun.target);
  new ResizeObserver(()=>{const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;rend.setPixelRatio(Math.min(Math.max(1,devicePixelRatio*curK),3));rend.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix();setCam()}).observe(el);
- (function loop(){const n=performance.now(),dt=Math.min((n-(loop.l||n))/1000,.1);loop.l=n;if(playing&&P){tt+=dt*spd*rate();if(tt>=P.T){tt=P.T;playing=false}upd()}ctl.update();rend.render(scene,cam);requestAnimationFrame(loop)})()}
+ (function loop(){const n=performance.now(),dt=Math.min((n-(loop.l||n))/1000,.1);loop.l=n;if(playing&&P){const t0=tt;if(t0===0)kickSnd();tt+=dt*spd*rate();if(tt>=P.T){tt=P.T;playing=false;landSnd()}upd()}ctl.update();declutter();rend.render(scene,cam);requestAnimationFrame(loop)})()}
 const rate=()=>P?P.T/Math.min(Math.max(P.T,2),12):1;
 function sp(){$('spd').textContent='গতি: '+spd+'×'+(P&&Math.abs(rate()-1)>.02?' (বাস্তবের '+f(rate()*spd)+' গুণ)':'')}
-function draw(){evalMatch();render();panels();hud();const ph=$('ph');sp();fit();
+function draw(){evalMatch();sideSync();render();panels();hud();const ph=$('ph');sp();fit();
  if(!ready){ph.style.display='flex';ph.textContent='3D লাইব্রেরি লোড হয়নি — ইন্টারনেট সংযোগ দিয়ে পাতাটি আবার খোলো। (হিসাব ও ফলাফল ঠিকভাবেই কাজ করছে)';return}
- if(grp){scene.remove(grp);grp.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.isSprite&&o.material.map&&o.material.map!==TX.c)o.material.map.dispose()})}grp=null;ball=null;
+ if(grp){scene.remove(grp);grp.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.isSprite&&o.material.map&&o.material.map!==TX.c)o.material.map.dispose()})}grp=null;ball=null;KL.length=0;
  ph.style.display=P?'none':'flex';ph.textContent='গতিপথ দেখতে প্রয়োজনীয় মান দাও (যেমন v₀ ও θ₀)।';if(!P)return;textures();
  const{v,a,g,T,H,R,vx,vy,h}=P,ext=Math.max(R,2*H,1e-9),step=nice(ext/6),Lx=Math.max(step,Math.ceil(R*1.15/step)*step),Hy=Math.max(step,Math.ceil(H*1.3/step)*step),sc=Math.max(Lx,Hy);D={Lx,Hy,sc};
  const shw=k=>!HIDE||S[k].m==='k'||MATCH[k]===true||!!REV[k],shq=(k,i)=>!HIDE||S[k].m==='k'||(i===Qp.length-1&&(MATCH[k]===true||!!REV[k]));grp=new THREE.Group();scene.add(grp);scene.fog=new THREE.Fog(0xcfe5f5,sc*5,sc*38);
@@ -330,7 +455,7 @@ function draw(){evalMatch();render();panels();hud();const ph=$('ph');sp();fit();
   for(let i=0;i<24;i++){const an=Math.PI*2*i/24+rnd()*.2,hh=sc*(2+rnd()*3),r0=sc*(24+rnd()*8),m=new THREE.Mesh(new THREE.ConeGeometry(hh*.9,hh,6),new THREE.MeshLambertMaterial({color:new THREE.Color(0x6a86a3).lerp(new THREE.Color(0x8aa0b5),rnd())}));m.position.set(Lx/2+Math.cos(an)*r0,hh/2,Math.sin(an)*r0);add(m)}
  // axes & ticks
  add(line([[0,0,0],[Lx*1.05,0,0]],0xffffff),line([[0,0,0],[0,Hy*1.05,0]],0x06305f),line([[0,0,0],[0,0,Lx*.3]],0xdddddd));
- const lab=(t,sz,p,c='#fff',b='#06305fb8')=>{const s=sprite(t,sz,c,b);s.position.set(...p);add(s)};
+ const lab=(t,sz,p,c='#fff',b='#06305fb8')=>{const s=sprite(t,sz,c,b);s.position.set(...p);add(s);if(sz>sc*.2)KL.push({s,a:s.position.clone()})};
  lab('x (m)',sc*.16,[Lx*1.1,0,0]);lab('y (m)',sc*.16,[0,Hy*1.1,0]);lab('z',sc*.08,[0,0,Lx*.33]);
  for(let i=0;i*step<=Lx+1e-9;i++)lab(tk(i*step),sc*.1,[i*step,-sc*.04,sc*.03]);
  for(let j=1;j*step<=Hy+1e-9;j++)lab(tk(j*step),sc*.1,[-sc*.05,j*step,0]);
@@ -366,21 +491,23 @@ function upd(){if(!P||!ball)return;const x=P.vx*tt,y=Math.max(0,P.h+P.vy*tt-.5*P
 function setCam(){if(!P||!cam||!D.sc)return;const{Lx,Hy,sc}=D,tn=Math.tan(rad(21)),d=Math.max(Lx*.62/(tn*cam.aspect),Hy*.85/tn)*1.05,cy=Hy*.4;ctl.target.set(Lx/2,cy,0);cam.near=sc*.01;cam.far=sc*250;cam.updateProjectionMatrix();ctl.minDistance=sc*.2;ctl.maxDistance=sc*25;
  if(side){cam.position.set(Lx/2,cy,d);ctl.enableRotate=false}else{const az=rad(30),el=rad(14);cam.position.set(Lx/2+d*Math.sin(az)*Math.cos(el),cy+d*Math.sin(el),d*Math.cos(az)*Math.cos(el));ctl.enableRotate=true}ctl.update()}
 /* ---------- events ---------- */
-$('solve').onclick=()=>{tt=0;solve()};$('show').onclick=()=>{solve();if(P){tt=0;playing=true}};
+$('show').onclick=()=>{solve();if(P){tt=0;playing=true}};
 $('rst').onclick=()=>{resetAll();say('','');YF.v=false;draw()};
 $('res').addEventListener('input',e=>{const t=e.target;if(t.classList&&t.classList.contains('ans')){ANS[t.dataset.k]=t.value;check()}});
-$('clap').onclick=hideClap;
-$('res').addEventListener('click',e=>{const t=e.target;if(t.classList&&t.classList.contains('eyeb')){REV[t.dataset.k]=!REV[t.dataset.k];draw()}});
+$('res').addEventListener('click',e=>{const t=e.target;if(t.classList&&t.classList.contains('eyeb')){REV[t.dataset.k]=!REV[t.dataset.k];draw();if(REV[t.dataset.k])showAns(t.dataset.k,'reveal')}});
 $('play').onclick=()=>{if(P){if(tt>=P.T)tt=0;playing=true}};$('pause').onclick=()=>playing=false;$('restart').onclick=()=>{tt=0;playing=!!P;upd()};
 $('fast').onclick=()=>{spd=Math.min(8,spd*2);sp()};$('slow').onclick=()=>{spd=Math.max(.125,spd/2);sp()};
 $('tl').oninput=e=>{if(!P)return;playing=false;tt=P.T*e.target.value/1000;upd()};
-const tab=s=>{side=s;$('b3').classList.toggle('on',!s);$('bs').classList.toggle('on',s);setCam()};$('b3').onclick=()=>tab(false);$('bs').onclick=()=>tab(true);$('bc').onclick=()=>setCam();
+const tab=s=>{side=s;$('b3').classList.toggle('on',!s);$('bs').classList.toggle('on',s);setCam()};$('b3').onclick=()=>tab(false);$('bs').onclick=()=>tab(true);$('bc').onclick=()=>setCam();$('bsd').onclick=()=>{SNDM=SNDM==='voice'?'clap':SNDM==='clap'?'off':'voice';const b=$('bsd');b.classList.toggle('on',SNDM!=='off');b.textContent=SNDM==='voice'?'🗣 কথা বলবে':SNDM==='clap'?'👏 হাততালি':'🔇 শব্দ বন্ধ';if(SNDM==='voice')speakBn('সাবাশ! উত্তর মিলে গেছে।',applause);else if(SNDM==='clap')applause()};$('bh').onclick=()=>{HUDON=!HUDON;$('bh').classList.toggle('on',HUDON);$('bh').textContent=HUDON?'⏱ সময় লুকাও':'⏱ সময় দেখাও';hud()};
 $('fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()};
-function fit(){const W=innerWidth,H=innerHeight,p=W<H*.85||W<720,st=$('stage');st.classList.toggle('p',p);let k,lw,lh;
+let DESK=false;try{DESK=localStorage.getItem('deskMode')==='1'}catch(e){}
+const dmBtn=()=>{$('dm').textContent=DESK?'📱 মোবাইল মোড':'🖥 ডেস্কটপ মোড'};
+$('dm').onclick=()=>{DESK=!DESK;try{localStorage.setItem('deskMode',DESK?'1':'0')}catch(e){}dmBtn();fit();scrollTo(0,0)};
+function fit(){const W=innerWidth,H=innerHeight,p=!DESK&&(W<H*.85||W<720),st=$('stage');st.classList.toggle('p',p);let k,lw,lh;
  if(p){lw=620;k=W/lw;st.style.width=lw+'px';st.style.height='auto';lh=st.offsetHeight;document.body.style.overflowY='auto'}
  else{k=Math.min(W/1920,H/1080);lw=W/k;lh=H/k;st.style.width=lw+'px';st.style.height=lh+'px';document.body.style.overflowY='hidden'}
- curK=k;st.style.transform='scale('+k+')';$('wrap').style.width=W+'px';$('wrap').style.height=lh*k+'px'}
-addEventListener('resize',fit);build();resetAll();S.v={m:'k',x:20};IN.v.value='20';S.a={m:'k',x:45};IN.a.value='45';YF.v=true;YF.a=true;fit();if(ready)initGL();solve();
+ curK=k;if(ctl){const m=Math.min(Math.max(1/k,1),5);ctl.rotateSpeed=m;ctl.panSpeed=m}st.style.transform='scale('+k+')';$('wrap').style.width=W+'px';$('wrap').style.height=lh*k+'px'}
+dmBtn();addEventListener('resize',fit);build();resetAll();S.v={m:'k',x:20};IN.v.value='20';S.a={m:'k',x:45};IN.a.value='45';YF.v=true;YF.a=true;fit();if(ready)initGL();solve();
 
 (function(){const h=document.getElementById('rth');if(!h)return;const t=()=>h.parentNode.classList.toggle('shut');h.addEventListener('click',t);h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}})})();
 </script></body></html>
